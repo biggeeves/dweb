@@ -1,6 +1,5 @@
 <?php
 
-class crf_ptrack extends Eloquent {
+class Trial extends Eloquent {
 	protected $table = 'crf_ptrack';
 }
-?>

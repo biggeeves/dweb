@@ -18,7 +18,7 @@
 				<td>
 				@if (isset ( $value ) )
 					<?php if( $columnCount === 1 )   { $value = "<a href='generic?caseid=$value'>$value</a>"; } ?>
-					<?php if( $property == 'SLNAME' )  { $value = "<a href='sir_table?crf=crf_ptrack&amp;slname=$value'>$value</a>"; } ?>
+					<?php if( $property == 'slname' )  { $value = "<a href='sir_table?crf=crf_ptrack&amp;slname=$value'>$value</a>"; } ?>
 					{{$value}}
 				@else
 					Null

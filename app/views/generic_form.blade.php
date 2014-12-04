@@ -1,6 +1,8 @@
 @extends('layout')
 @section('content')
-    <h2>{{$tableName}}  Generic Table View</h2>
+    <h2>{{$tableName}}  Generic Form View- Read Only</h2>
+		<a href="generic?caseid=W05004&crud=u">Link to W05004</a>
+
 	<h3>Selected {{$this_crf}}</h3>
 	@if (count($crf) == 0 )
 		<p>There are no records in that table</p>

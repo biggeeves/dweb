@@ -23,6 +23,20 @@ Route::get( 'users', function()
 	 return View::make( 'users' )->with( 'users', $users);
 });
 
+
+Route::get( 'trial', function() 
+{
+     $trials = Trial::all();
+     // $trials = Trial::where('id_num', '=', 'W05004');
+     // $trials = Trial::where('id_num', 'LIKE', '%W%');
+     // $trials = Trial::where('STATUS','<',4);
+	 //$trials = Trial::all()->where('id_num', 'W05004');
+	 $thisCaseID = 'W05004';
+     $trials = Trial::where('id_num', '=', $thisCaseID)->get();
+
+	 return View::make( 'trial' )->with( 'trials', $trials);
+});
+
 Route::get( 'sir_table', function() 
 {
 	$requestedCRF ='';
@@ -35,12 +49,12 @@ Route::get( 'sir_table', function()
 			$someLastName = Input::get('slname');
 		}
 	}
-	/* $crf_list = DB::select( DB::raw('SELECT * FROM crf_Ptrack WHERE SLNAME LIKE "$someLastName"'), array(1) ); */
+	/* $crf_list = DB::select( DB::raw('SELECT * FROM crf_Ptrack WHERE slname LIKE "$someLastName"'), array(1) ); */
 
 	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_Ptrack';
 	if (!isset( $someLastName ) ) $someLastName  = 'ESCANO';
 	
-	$crf_list = DB::table( 'crf_ptrack' )->where('SLNAME', 'LIKE', $someLastName)->lists('SLNAME');
+	$crf_list = DB::table( 'crf_ptrack' )->where('slname', 'LIKE', $someLastName)->lists('slname');
 	$ptracks = crf_ptrack::all();
 
 	/* $ptracks = DB::select('select * from crf_ptrack ', array(1)); */
@@ -54,18 +68,24 @@ Route::get( 'sir_table', function()
 
 Route::get( 'generic', function() 
 {
-	 if (Input::has( 'crf' ) ) {
+
+	if (Input::has('crud')) {
+		$crudOperation = Input::get('crud');
+	 }
+	if (!isset( $crudOperation ) ) $crudOperation = 'r';
+
+	if (Input::has( 'crf' ) ) {
 		$requestedCRF = Input::get('crf');
 	 }
 	 
-	 if (Input::has( 'caseid' ) ) {
+	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
+
+	if (Input::has( 'caseid' ) ) {
 		$caseid = Input::get('caseid');
 	 }
 
-	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_Ptrack';
-	
 	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $requestedCRF) ->where('ID_NUM', $caseid)->first();
+		$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
 	}
 	else {
 		$this_crf = DB::table( $requestedCRF) -> get();
@@ -76,14 +96,22 @@ Route::get( 'generic', function()
 
     $columns = Schema::getColumnListing( $requestedCRF );
 	
-	if ( isset( $caseid ) ) {
-		return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+	if (isset( $caseid )) {
+		if ($crudOperation == 'r') 
+		{
+			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
+			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+		} elseif ($crudOperation == 'u') 
+		{
+			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
+			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+		}
 	}
 	else {
 		return View::make('generic_table')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
 		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
 	}
+	return View::make('hello');
 });
 
 
@@ -100,4 +128,9 @@ Route::get( 'sir_form', function()
 Route::get( 'sample_blog', function() 
 {
      return View::make('sample_blog');
+});
+
+Route::post('crud', function()
+{
+	 return View::make( 'hello' );
 });
