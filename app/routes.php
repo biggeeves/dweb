@@ -11,6 +11,7 @@
 |
 */
 
+
 Route::get('/', function()
 {
 	 return View::make( 'hello' );
@@ -39,6 +40,8 @@ Route::get( 'trial', function()
 
 Route::get( 'sir_table', function() 
 {
+    $allTables = DB::select('SHOW TABLES');
+
 	$requestedCRF ='';
 		if (Input::has( 'crf' ) ) {
 		$requestedCRF = Input::get('crf');
@@ -61,7 +64,7 @@ Route::get( 'sir_table', function()
 	 $columns = Schema::getColumnListing( $requestedCRF );
 
      return View::make('sir_table')->with( 'ptracks', $ptracks)->with('tableName', $requestedCRF)->with('columns', $columns)
-	 ->with( 'this_crf', $requestedCRF) ->with( 'lol', $crf_list);
+	 ->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables );
 
 });
 
@@ -102,7 +105,7 @@ Route::get( 'generic', function()
 			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
 			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
 		} elseif ($crudOperation == 'u') 
-		{
+		{ 
 			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
 			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
 		}
@@ -132,5 +135,88 @@ Route::get( 'sample_blog', function()
 
 Route::post('crud', function()
 {
-	 return View::make( 'hello' );
+	if (Input::has( 'crf' ) ) {
+		$requestedCRF = Input::get('crf');
+	 }
+	 
+	$slname = Input::get('slname');
+	$sfname = Input::get('sfname');
+	$statusx = Input::get('status');
+	 
+
+if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
+    $columns = Schema::getColumnListing( $requestedCRF );
+
+	if (Input::has( 'id_num' ) ) {
+		$caseid = Input::get('id_num');
+	 }
+	if ( isset( $caseid ) ) {
+		$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
+	}
+	$allTables = DB::select('SHOW TABLES');
+    
+   	// create the validation rules ------------------------
+	$rules = array(
+		'slname'             => 'required', 						// just a normal required validation
+		'sfname'            => 'required', 	// required and must be unique in the ducks table
+		'status'         => 'integer|min:0|max:44'
+	);
+    
+   	// do the validation ----------------------------------
+	// validate against the inputs from our form
+	$validator = Validator::make(Input::all(), $rules);
+    
+    
+   	// check if the validator failed -----------------------
+	if ($validator->fails()) {
+
+		// get the error messages from the validator
+		$messages = $validator->messages();
+
+		// redirect our user back to the form with the errors from the validator
+		//return Redirect::to('generic')
+		//	->withErrors($validator)->with( 'tables', $allTables );
+        return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
+		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->withErrors($validator)->with( 'tables', $allTables ) ;
+
+}
+
+
+
+	// do the validation ----------------------------------
+	// validate against the inputs from our form
+	// $validator = Validator::make(Input::all(), $rules);
+
+    
+	
+    $trials = Trial::where('id_num', '=', $caseid)->first();
+	$trials->slname = $slname;		
+	$trials->sfname = $sfname;		
+	$trials->status = $statusx;		
+	$trials->save();
+	
+	$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
+
+
+
+    return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
+		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+
 });
+
+
+
+
+Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num) 
+	{
+	$allTables = DB::select('SHOW TABLES');
+		// return our view and Nerd information
+		return View::make('nerd-edit') // pulls app/views/nerd-edit.blade.php
+			->with('nerd', Nerd::find($id_num))  ->with( 'tables', $allTables );
+	}));
+
+	// route to process the form
+	Route::post('nerd/edit', function() {
+		// process our form
+	});
+    

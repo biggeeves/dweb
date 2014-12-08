@@ -26,9 +26,4 @@
 		@endforeach
 		</table>
 	@endif
-	@foreach ($tables as $tablename)
-		@foreach($tablename as $key=>$value)
-			<p><a href="generic?crf={{$value}}">{{$value}}</a></p>
-		@endforeach
-	@endforeach
 @stop

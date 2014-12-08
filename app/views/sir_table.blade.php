@@ -32,14 +32,5 @@
 	
 	<p>Current directions.  Include?slname=XXXX and change XXXX to someones last name to query the database
 	It uses the LIKE SQL and at this point is non-case sensitive just like SQL</p>
-	<p>The results of the query will show below</p>
-	@if ( count( $lol )  == 0 )
-		<p>No Results</p>
-	@else
-		@foreach( $lol as $laugh)
-			<p>Results include: {{$laugh}}</p>
-		@endforeach
-	@endif
-	<p>Debug Info- Type: {{gettype($lol)}}  , Count: {{count($lol)}}, var_dump: {{var_dump($lol)}}</p>
-	<p>end of page</p>
+
 @stop

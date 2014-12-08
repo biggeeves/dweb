@@ -13,25 +13,14 @@
         <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="dropdown">
-              <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="sir_table">SIR Table</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="users">Users</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="sample_blog">Sample Blog</a></li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf=crf_formstat">Form Status</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf=crf_ptrack">Ptrack</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf=crf_followup">Follow up</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 2 <span class="caret"></span></a>
+              <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Database Tables<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Separated link</a></li>
+				@foreach ($tables as $tablename)
+					@foreach($tablename as $key=>$value)
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf={{$value}}">{{$value}}</a></li>
+						<!-- <p><a href="generic?crf={{$value}}">{{$value}}</a></p> -->
+					@endforeach
+				@endforeach			  
               </ul>
             </li>
           </ul>

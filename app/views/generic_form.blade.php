@@ -1,7 +1,7 @@
 @extends('layout')
 @section('content')
     <h2>{{$tableName}}  Generic Form View- Read Only</h2>
-		<a href="generic?caseid=W05004&crud=u">Link to W05004</a>
+		<a href="generic?caseid=W05004&crud=u">Edit W05004</a>
 
 	<h3>Selected {{$this_crf}}</h3>
 	@if (count($crf) == 0 )
@@ -18,10 +18,4 @@
 			@endforeach
 		</form>
 	@endif
-	@foreach ($tables as $tablename)
-		@foreach($tablename as $key=>$value)
-			<p><a href="generic?crf={{$value}}">{{$value}}</a></p>
-		@endforeach
-	@endforeach
-		
 @stop

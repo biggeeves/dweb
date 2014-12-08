@@ -55,6 +55,8 @@
             <Folder name="models">
                 <File name="app\models\crf_ptrack.php" />
                 <File name="app\models\User.php" />
+                <File name="app\models\Trial.php" />
+                <File name="app\models\nerd.php" />
             </Folder>
             <Folder name="start">
                 <File name="app\start\artisan.php" />
@@ -121,6 +123,8 @@
                 <File name="app\views\users.blade.php" />
                 <File name="app\views\generic_table.blade.php" />
                 <File name="app\views\generic_form.blade.php" />
+                <File name="app\views\generic_form_update.blade.php" />
+                <File name="app\views\nerd-edit.blade.php" />
             </Folder>
             <File name="app\filters.php" />
             <File name="app\routes.php" />
