@@ -71,7 +71,7 @@ Route::get( 'sir_table', function()
 
 Route::get( 'generic', function() 
 {
-
+    
 	if (Input::has('crud')) {
 		$crudOperation = Input::get('crud');
 	 }
@@ -83,7 +83,9 @@ Route::get( 'generic', function()
 	 
 	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 
-	if (Input::has( 'caseid' ) ) {
+    $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
+
+if (Input::has( 'caseid' ) ) {
 		$caseid = Input::get('caseid');
 	 }
 
@@ -103,11 +105,11 @@ Route::get( 'generic', function()
 		if ($crudOperation == 'r') 
 		{
 			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)->with('varSchema', $varSchema);
 		} elseif ($crudOperation == 'u') 
 		{ 
 			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid) ;
 		}
 	}
 	else {
@@ -155,7 +157,20 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 	}
 	$allTables = DB::select('SHOW TABLES');
     
-   	// create the validation rules ------------------------
+	if (Input::has( 'submit' ) ) {
+		$dccSubmit = Input::get('submit');
+	 }
+    if($dccSubmit == 'delete') {
+        if( isset( $caseid ) ) {
+            $trials = Trial::where('id_num', '=', $caseid)->first();
+           	$trials->delete();
+
+            Session::flash('message', "Successfully deleted $caseid");
+            return View::make('index')->with( 'tables', $allTables ) ;
+        }
+    }
+
+// create the validation rules ------------------------
 	$rules = array(
 		'slname'             => 'required', 						// just a normal required validation
 		'sfname'            => 'required', 	// required and must be unique in the ducks table
@@ -177,17 +192,9 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 		//return Redirect::to('generic')
 		//	->withErrors($validator)->with( 'tables', $allTables );
         return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->withErrors($validator)->with( 'tables', $allTables ) ;
+		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->withErrors($validator)->with('caseid', $caseid) ;
 
 }
-
-
-
-	// do the validation ----------------------------------
-	// validate against the inputs from our form
-	// $validator = Validator::make(Input::all(), $rules);
-
-    
 	
     $trials = Trial::where('id_num', '=', $caseid)->first();
 	$trials->slname = $slname;		
@@ -197,10 +204,8 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 	
 	$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
 
-
-
     return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid) ;
 
 });
 

@@ -11,13 +11,11 @@
 		
 		</tr>
 		@foreach( $ptracks as $ptrack )
-			<?php $columnCount =0; ?>
 			<tr>
 			@foreach( $ptrack->toArray() as $property=>$value )
-				<?php $columnCount++; ?>
 				<td>
 				@if (isset ( $value ) )
-					<?php if( $columnCount === 1 )   { $value = "<a href='generic?caseid=$value'>$value</a>"; } ?>
+					<?php if( $property === 'id_num' )   { $value = "<a href='generic?caseid=$value'>$value</a>"; } ?>
 					<?php if( $property == 'slname' )  { $value = "<a href='sir_table?crf=crf_ptrack&amp;slname=$value'>$value</a>"; } ?>
 					{{$value}}
 				@else
