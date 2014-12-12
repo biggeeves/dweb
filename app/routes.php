@@ -84,6 +84,7 @@ Route::get( 'generic', function()
 	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 
     $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
+    $valueSchema = SchemaValueLabel::where('table_name', '=', $requestedCRF)->get();
 
 if (Input::has( 'caseid' ) ) {
 		$caseid = Input::get('caseid');
@@ -105,11 +106,13 @@ if (Input::has( 'caseid' ) ) {
 		if ($crudOperation == 'r') 
 		{
 			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)->with('varSchema', $varSchema);
+			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)
+            ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
 		} elseif ($crudOperation == 'u') 
 		{ 
 			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid) ;
+			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)
+            ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
 		}
 	}
 	else {
@@ -163,9 +166,13 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
     if($dccSubmit == 'delete') {
         if( isset( $caseid ) ) {
             $trials = Trial::where('id_num', '=', $caseid)->first();
-           	$trials->delete();
+            if (isset($trials) ) {
+                $trials->delete();
+                Session::flash('message', "Successfully deleted $caseid");
+            } else{
+                Session::flash('message', "Sorry, That record could not be found.  Try something else.");
+            }
 
-            Session::flash('message', "Successfully deleted $caseid");
             return View::make('index')->with( 'tables', $allTables ) ;
         }
     }

@@ -12,17 +12,14 @@
 					<th>{{{$column}}}</th>
 				@endforeach
 			</tr>
-			<tr>
-				@foreach( $crf as $this_row )
-				<?php $columnCount=0; ?>
-			<tr>
+			@foreach( $crf as $this_row )
+                <tr>
 				@foreach($this_row as $key=>$value)
-					<?php $columnCount++; ?>
-					<?php if( $columnCount === 1 )   { $value = "<a href='generic?caseid=$value'>$value</a>"; } ?>
+					<?php if( $key === 'id_num' )   { $value = "<a href='generic?caseid=$value&crf=$this_crf'>$value</a>"; } ?>
 
 					<td>{{$value}}</td>
 				@endforeach
-			</tr>
+                </tr>
 		@endforeach
 		</table>
 	@endif
