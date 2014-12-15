@@ -11,9 +11,10 @@
 	@else
 		<form class="form-horizontal" role="form">
 			@foreach( $crf as $key=>$value )
-                <?php $thisLabel = $key; 
-                    $thisMax = ''; 
-                    $thisMin = '';
+                <?php 
+                    $varLabel = $key; 
+                    $varMax = ''; 
+                    $varMin = '';
                     $valueLabels = [];
                 ?>
 					<div class="form-group">
@@ -21,9 +22,9 @@
                             foreach( $varSchema as $schemaRow ) {
                                 $b= $schemaRow->toArray(); 
                                 if ($b['variable_name'] == $key ) {
-                                    $thisLabel = $b['variable_label'];
-                                    $thisMin = $b['variable_range_min'];
-                                    $thisMax = $b['variable_range_max'];
+                                    $varLabel = $b['variable_label'];
+                                    $varMin = $b['variable_range_min'];
+                                    $varMax = $b['variable_range_max'];
                                     break;
                                 }
                             }
@@ -31,19 +32,22 @@
                             foreach( $valueSchema as $valueRow ) {
                                 $c= $valueRow->toArray(); 
                                 if ($c['variable_name'] == $key ) {
-                                    $valueLabels[] = $c['value_label'];
+                                    $valueLabels[ $c['value'] ] = $c['value_label'];
                                 }
                             }
                         ?>
-						<label for="{{$key}}" class="col-sm-2 control-label">{{$thisLabel}}</label>
+						<label for="{{$key}}" class="col-sm-2 control-label">{{$varLabel}}</label>
 						<div class="col-sm-4">
-							<input type="text" class="form-control" id="{{$key}}" value="{{$value}}"  min="{{$thisMin}}" max="{{$thisMax}}">
+							<input type="text" class="form-control" id="{{$key}}" value="{{$value}}"
+                            @if( isset($varMin) ) min="{{$varMin}}" @endif 
+                            @if( isset($varMax) ) max="{{$varMax}}" @endif 
+                            >
 						</div>
 						<div class="col-sm-5">
                             @if ( count($valueLabels) > 0 )
                                 <select>
-                                    @foreach ($valueLabels as $label) 
-                                        <option class="form-control" value="{{$label}}">{{$label}}</option>
+                                    @foreach ($valueLabels as $labelValue=>$label) 
+                                        <option class="form-control" value="{{$labelValue}}">{{$label}}</option>
                                     @endforeach
                                 </select>
                             @endif

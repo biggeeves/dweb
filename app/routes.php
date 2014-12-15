@@ -232,3 +232,29 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
 		// process our form
 	});
     
+    
+Route::get( 'crf_schema/{crf}', function($crf) 
+{
+    $requestedCRF = $crf;
+    if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
+    $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
+    
+    foreach( $varSchema as $schemaRow ) {
+        $varLine[] = $schemaRow->toArray(); 
+    }
+    if(empty($varLine) ) $varLine[0] = 'empty';
+   
+    
+    $valueSchema = SchemaValueLabel::where('table_name', '=', $requestedCRF)->get();
+
+    $allTables = DB::select('SHOW TABLES');
+    $tableName = $requestedCRF;
+    $columns = Schema::getColumnListing('schema_variable');
+
+     return View::make('table_schema')->with('tableName', $tableName)
+        ->with('schemaColumn', $columns)
+        ->with('tables', $allTables )
+        ->with('varLine', $varLine)
+        ->with('valueSchema', $valueSchema);
+
+});
