@@ -12,10 +12,50 @@
 */
 
 
-Route::get('/', function()
+/* first step in Laravel 
+ Route::get('/', function()
 {
 	 return View::make( 'hello' );
 });
+*/
+
+Route::get('/', array('as' => 'home', function() 
+{
+	 return View::make( 'hello' );
+}));
+
+
+
+Route::get('login', array('as' => 'login', function () {return 'login'; }))->before('guest');
+
+Route::post('login', function () { });
+
+Route::get('logout', array('as' => 'logout', function () { }))->before('auth');
+
+Route::get('profile', array('as' => 'profile', function () { }))->before('auth');
+
+
+
+/*
+Route::get('/a', array(
+    'before' => 'newYear',
+    function () {
+    Return "You blah blah";
+    }
+    )
+);
+*/
+Route::get('/a', array('before'=>'newYear', 'uses' => 'AController@showWelcome'));
+
+Route::get('/a', 'AController@showWelcome');
+Route::get('/b', 'AController@showTable');
+Route::get('c/{someVar}', function ($someVar) {
+    return "You added {$someVar}";
+});
+Route::get('/d/{passVar}', 'AController@passVar');
+Route::get('/e', array('uses' => 'AController@withArray', 'as' => 'directions'));
+
+
 
 Route::get( 'users', function() 
 {
@@ -86,7 +126,7 @@ Route::get( 'generic', function()
     $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
     $valueSchema = SchemaValueLabel::where('table_name', '=', $requestedCRF)->get();
 
-if (Input::has( 'caseid' ) ) {
+    if (Input::has( 'caseid' ) ) {
 		$caseid = Input::get('caseid');
 	 }
 

@@ -22,6 +22,8 @@ App::after(function($request, $response)
 	//
 });
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Filters
@@ -87,4 +89,27 @@ Route::filter('csrf', function()
 	{
 		throw new Illuminate\Session\TokenMismatchException;
 	}
+});
+
+Route::filter('newYear', function() 
+{
+    if (date('m/d') == '12/37') {
+        return 'Happy December 17th';
+    }
+});
+
+
+Route::filter('guest', function()
+{
+        if (Auth::check()) 
+                return Redirect::route('home')
+                        ->with('flash_notice', 'You are already logged in!');
+
+});
+
+Route::filter('auth', function()
+{
+        if (Auth::guest())
+                return Redirect::route('login')
+                        ->with('flash_error', 'You must be logged in to view this page!');
 });
