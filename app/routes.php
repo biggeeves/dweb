@@ -34,6 +34,15 @@ Route::get('logout', array('as' => 'logout', function () { }))->before('auth');
 
 Route::get('profile', array('as' => 'profile', function () { }))->before('auth');
 
+Route::get('signup', function() {
+    return View:: make('signup');
+});
+
+Route::post('thanks', function() {
+    $theEmail = Input::get('email');
+    return View::make('thanks')->with('theEmail', $theEmail);
+});
+
 
 
 /*
@@ -98,7 +107,7 @@ Route::get( 'sir_table', function()
 	if (!isset( $someLastName ) ) $someLastName  = 'ESCANO';
 	
 	$crf_list = DB::table( 'crf_ptrack' )->where('slname', 'LIKE', $someLastName)->lists('slname');
-	$ptracks = crf_ptrack::all();
+	$ptracks = Crf_ptrack::all();
 
 	/* $ptracks = DB::select('select * from crf_ptrack ', array(1)); */
 	 $columns = Schema::getColumnListing( $requestedCRF );

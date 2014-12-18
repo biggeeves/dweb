@@ -15,11 +15,15 @@
                     <li class="dropdown">
                         <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Database Tables<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                            @foreach ($tables as $tablename)
-                                @foreach($tablename as $key=>$value)
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf={{$value}}">{{$value}}</a></li>
-                                @endforeach
-                            @endforeach			  
+                            @if (isset($tables)) 
+                                @foreach ($tables as $tablename)
+                                    @foreach($tablename as $key=>$value)
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf={{$value}}">{{$value}}</a></li>
+                                    @endforeach
+                                @endforeach			  
+                            @else
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">No Tables passed in</a></li>
+                            @endif
                         </ul>
                     </li>
                 </ul>
@@ -27,18 +31,22 @@
                     <li class="dropdown">
                         <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Table Schema<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                            @foreach ($tables as $tablename)
-                                @foreach($tablename as $key=>$value)
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/crf_schema/{{$value}}">{{$value}}</a></li>
-                                @endforeach
-                            @endforeach			  
+                            @if (isset($tables))
+                                @foreach ($tables as $tablename)
+                                    @foreach($tablename as $key=>$value)
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/crf_schema/{{$value}}">{{$value}}</a></li>
+                                    @endforeach
+                                @endforeach			  
+                            @else
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">No Tables passed in</a></li>
+                            @endif
                         </ul>
                     </li>
                 </ul>
 
 <ul class="nav navbar-nav navbar-right">
                     <li id="fat-menu" class="dropdown">
-                        <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Schemas <span class="caret"></span></a>
+                        <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
