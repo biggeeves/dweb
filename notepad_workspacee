@@ -117,7 +117,6 @@
                 <File name="app\views\layout.blade.php" />
                 <File name="app\views\list_tables.blade.php" />
                 <File name="app\views\sample_blog.blade.php" />
-                <File name="app\views\sir_form.blade.php" />
                 <File name="app\views\sir_table.blade.php" />
                 <File name="app\views\top_nav.blade.php" />
                 <File name="app\views\users.blade.php" />

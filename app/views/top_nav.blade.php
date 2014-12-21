@@ -8,7 +8,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Generic Database</a>
+                <a class="navbar-brand" href="{{URL::to('/')}}">Generic Database</a>
             </div>
             <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
                 <ul class="nav navbar-nav">
@@ -48,6 +48,11 @@
                     <li id="fat-menu" class="dropdown">
                         <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                        @if (Auth::check())
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/logout')}}">Log Out</a></li>
+                        @else
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/login')}}">Log in</a></li>
+                        @endif
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>

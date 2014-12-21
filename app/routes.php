@@ -24,13 +24,39 @@ Route::get('/', array('as' => 'home', function()
 	 return View::make( 'hello' );
 }));
 
+Route::get('/register', 'RegisterController@showRegister');
+
+Route::post('/register', 'RegisterController@doRegister');
+
+Route::get('/login', function () 
+{
+    return View::make('login');
+});
+
+Route::post('login', function () 
+{
+    $credentials = Input::only('username', 'password');
+    if (Auth::attempt($credentials)) {
+        return Redirect::intended('/');
+    }
+    Session::flash('message', "Sorry, please try again");
+
+    return Redirect::to('login');
+});
+
+Route::get('/logout', function () 
+{
+    Auth::logout();
+    return View::make('logout');
+});
 
 
-Route::get('login', array('as' => 'login', function () {return 'login'; }))->before('guest');
 
-Route::post('login', function () { });
+// Route::get('login', array('as' => 'login', function () {return 'login'; }))->before('guest');
 
-Route::get('logout', array('as' => 'logout', function () { }))->before('auth');
+// Route::post('login', function () { });
+
+// Route::get('logout', array('as' => 'logout', function () { }))->before('auth');
 
 Route::get('profile', array('as' => 'profile', function () { }))->before('auth');
 
@@ -87,7 +113,9 @@ Route::get( 'trial', function()
 	 return View::make( 'trial' )->with( 'trials', $trials);
 });
 
-Route::get( 'sir_table', function() 
+Route::get( 'sir_table', array(
+    'before' => 'auth',
+    function() 
 {
     $allTables = DB::select('SHOW TABLES');
 
@@ -115,10 +143,12 @@ Route::get( 'sir_table', function()
      return View::make('sir_table')->with( 'ptracks', $ptracks)->with('tableName', $requestedCRF)->with('columns', $columns)
 	 ->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables );
 
-});
+}));
 
 
-Route::get( 'generic', function() 
+Route::get( 'generic', array(
+    'before' => 'auth',
+    function() 
 {
     
 	if (Input::has('crud')) {
@@ -169,7 +199,7 @@ Route::get( 'generic', function()
 		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
 	}
 	return View::make('hello');
-});
+}));
 
 
 Route::get( 'sir_form', function() 
