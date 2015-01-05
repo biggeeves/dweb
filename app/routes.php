@@ -35,11 +35,17 @@ Route::get('/login', function ()
 
 Route::post('login', function () 
 {
-    $credentials = Input::only('username', 'password');
-    if (Auth::attempt($credentials)) {
+    $credentials = Input::only('user_login', 'user_password');
+	$cred2 = array( "user_login" => Input::get('user_login'),
+		"password" => Input::get('user_password')
+	);
+	
+    if (Auth::attempt($cred2)) {
         return Redirect::intended('/');
     }
-    Session::flash('message', "Sorry, please try again");
+	$x_debug = implode(",", $credentials);
+	
+    Session::flash('message', $x_debug);
 
     return Redirect::to('login');
 });
@@ -85,6 +91,10 @@ Route::get('/a', array('before'=>'newYear', 'uses' => 'AController@showWelcome')
 Route::get('/a', 'AController@showWelcome');
 Route::get('/b', 'AController@showTable');
 Route::get('c/{someVar}', function ($someVar) {
+     $Ptrack = Crf_ptrack::all();
+     /* yet this one returns an error and I don't know why */
+	 $ohNo = Crf_xm::all();
+
     return "You added {$someVar}";
 });
 Route::get('/d/{passVar}', 'AController@passVar');

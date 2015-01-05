@@ -113,3 +113,10 @@ Route::filter('auth', function()
                 return Redirect::route('login')
                         ->with('flash_error', 'You must be logged in to view this page!');
 });
+/* Added by Greg Neils.  Checks for database connection error and displays output below*/
+App::error(function(PDOException $exception)
+{
+    Log::error("Error connecting to database: ".$exception->getMessage());
+	// uncomment to see database connection errors
+    // return "Error connecting to database";  
+});

@@ -7,6 +7,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-2 alert alert-danger">There are session messages</div>
             <div class="col-md-6 col-md-offset-2 alert alert-success">{{ Session::get( 'message' ) }}</div>
+			<div class="col-md-6 col-md-offset-2 alert alert-success">{{ $err }}</div>
         </div>
     @endif
 
@@ -14,11 +15,11 @@
     <h1>Log In</h1>
     {{Form::open(array('url' => 'login')) }}
 
-        {{Form::label('username', 'Username') }}
-        {{Form::text('username')}} <br />
+        {{Form::label('user_login', 'Username') }}
+        {{Form::text('user_login')}} <br />
     
-        {{Form::label('password', 'Password') }}
-        {{Form::password('password')}} <br />
+        {{Form::label('user_password', 'Password') }}
+        {{Form::password('user_password')}} <br />
         
         {{Form::submit('Log In')}}
     

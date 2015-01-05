@@ -36,7 +36,7 @@
 <body>
 	<div class="welcome">
 		<a href="sir_table"><h1>Breath, You made it to A</h1></a>
-	</di<a href="sir_table"><h1>Wow this is the second line demo for Howard</h1></a>
+		<a href="sir_table"><h1>Wow this is the second line demo for Howard</h1></a>
 	</div>
 </body>
 </html>
