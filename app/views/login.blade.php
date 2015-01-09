@@ -1,16 +1,17 @@
 @extends('layout')
 @section('content')
     <div class="row">
-        <div class="col-md-6 col-md-offset-2">Log In Page</div>
+        <div class="col-md-6 col-md-offset-2">Welcome.  Please log in.</div>
     </div>
     @if( Session::has( 'message' ) )
         <div class="row">
             <div class="col-md-6 col-md-offset-2 alert alert-danger">There are session messages</div>
             <div class="col-md-6 col-md-offset-2 alert alert-success">{{ Session::get( 'message' ) }}</div>
-			<div class="col-md-6 col-md-offset-2 alert alert-success">{{ $err }}</div>
         </div>
     @endif
-
+    @if( isset( $err ) )
+			<div class="col-md-6 col-md-offset-2 alert alert-success">{{ $err }}</div>
+    @endif
 <div class="welcome">
     <h1>Log In</h1>
     {{Form::open(array('url' => 'login')) }}

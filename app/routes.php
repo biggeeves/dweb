@@ -35,18 +35,25 @@ Route::get('/login', function ()
 
 Route::post('login', function () 
 {
-    $credentials = Input::only('user_login', 'user_password');
-	$cred2 = array( "user_login" => Input::get('user_login'),
+$cred2 = array( "user_login" => Input::get('user_login'),
 		"password" => Input::get('user_password')
 	);
 	
     if (Auth::attempt($cred2)) {
+	 // return ( 'You are authenticated' );
         return Redirect::intended('/');
     }
-	$x_debug = implode(",", $credentials);
+    
+    
+	$x_debug = implode(",", $cred2 ) ;
+    $hashedPassword = Hash::make('mypassword');
+    if (Hash::check(Input::get('user_password'), $hashedPassword))
+{   return ('password match<br>' . Input::get('user_password'). "=" . $hashedPassword); 
+}
 	
     Session::flash('message', $x_debug);
 
+    return ( var_dump(Auth::attempt($cred2) ) );
     return Redirect::to('login');
 });
 
@@ -128,6 +135,17 @@ Route::get( 'sir_table', array(
     function() 
 {
     $allTables = DB::select('SHOW TABLES');
+    if (isset($tables)) {
+        foreach ($tables as $tablename) {
+            foreach($tablename as $key=>$value) {
+            	if( substr( $value, 1, 3)  == 'crf') {
+                    $firstTable = $value;
+                }
+            }
+        }
+
+    }
+
 
 	$requestedCRF ='';
 		if (Input::has( 'crf' ) ) {
@@ -141,7 +159,7 @@ Route::get( 'sir_table', array(
 	}
 	/* $crf_list = DB::select( DB::raw('SELECT * FROM crf_Ptrack WHERE slname LIKE "$someLastName"'), array(1) ); */
 
-	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_Ptrack';
+	if (!isset( $requestedCRF ) ) $requestedCRF = firstTable;
 	if (!isset( $someLastName ) ) $someLastName  = 'ESCANO';
 	
 	$crf_list = DB::table( 'crf_ptrack' )->where('slname', 'LIKE', $someLastName)->lists('slname');
@@ -156,11 +174,20 @@ Route::get( 'sir_table', array(
 }));
 
 
-Route::get( 'generic', array(
-    'before' => 'auth',
+Route::get( 'generic', 
     function() 
 {
-    
+    $allTables = DB::select('SHOW TABLES');
+    if (isset($allTables)) {
+        foreach ($allTables as $tablename) {
+            foreach($tablename as $key=>$value) {
+            	if( substr( $value, 0, 3)  == 'crf') {
+                    $firstTable = $value;
+                }
+            }
+        }
+    }
+
 	if (Input::has('crud')) {
 		$crudOperation = Input::get('crud');
 	 }
@@ -170,7 +197,7 @@ Route::get( 'generic', array(
 		$requestedCRF = Input::get('crf');
 	 }
 	 
-	if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
+	if (!isset( $requestedCRF ) ) $requestedCRF = $firstTable;
 
     $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
     $valueSchema = SchemaValueLabel::where('table_name', '=', $requestedCRF)->get();
@@ -209,7 +236,7 @@ Route::get( 'generic', array(
 		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
 	}
 	return View::make('hello');
-}));
+});
 
 
 Route::get( 'sir_form', function() 
@@ -332,18 +359,48 @@ Route::get( 'crf_schema/{crf}', function($crf)
         $varLine[] = $schemaRow->toArray(); 
     }
     if(empty($varLine) ) $varLine[0] = 'empty';
-   
     
-    $valueSchema = SchemaValueLabel::where('table_name', '=', $requestedCRF)->get();
-
     $allTables = DB::select('SHOW TABLES');
     $tableName = $requestedCRF;
     $columns = Schema::getColumnListing('schema_variable');
 
-     return View::make('table_schema')->with('tableName', $tableName)
+     return View::make('table_schema')
+        ->with('tableName', $tableName)
         ->with('schemaColumn', $columns)
         ->with('tables', $allTables )
-        ->with('varLine', $varLine)
-        ->with('valueSchema', $valueSchema);
+        ->with('varLine', $varLine);
 
 });
+
+Route::get( 'var_schema/{crf}/{varNum}', function($CRF, $varNum) 
+{
+    if (!isset($varNum) ) $varNum = 1;
+    $nextVarNum = $varNum + 1;
+    $prevVarNum = $varNum - 1;
+    if ( $prevVarNum < 1 ) $prevVarNum = 1;
+    $allTables = DB::select('SHOW TABLES');
+    foreach ($allTables as $tablename) {
+        foreach($tablename as $key=>$value) {
+          	if( substr( $value, 1, 3)  == 'crf') {
+                $firstTable = $value;
+            }
+        }
+    }
+    if (!isset( $CRF ) ) $CRF = $firstTable;
+    $varSchema = SchemaVariable::where('table_name', '=', $CRF)
+        ->where('id', $varNum)
+        ->get();
+    foreach( $varSchema as $schemaRow ) {
+        $varLine[] = $schemaRow->toArray(); 
+    }
+
+
+    return View::make('schema_var_update')
+    ->with( 'crf', $CRF)
+    ->with( 'tables', $allTables )
+    ->with( 'varLine', $varLine)
+    ->with( 'nextVarNum', $nextVarNum)
+    ->with( 'prevVarNum', $prevVarNum)
+    ;
+});
+
