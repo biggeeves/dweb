@@ -1,6 +1,6 @@
 @extends('layout')
 @section('content')
-    <h2>{{$crf}}  Variable Schema Update</h2>
+    <h2>{{$tableLabel}}  Variable Schema Update</h2>
     @if ( ! $errors->isEmpty() )
     <div class="row">
         <div class="col-md-4 alert alert-danger">Please fix these errors before continuing on.</div>
@@ -22,12 +22,10 @@
     @endif	
     @if (count($crf) == 0 )
 		<p>There are no records in that table</p>
-	@else
-        {{$crf}}
     @endif
     
-    <a href="/dcc/public/var_schema/{{$crf}}/{{$nextVarNum}}">Next {{$nextVarNum}}</a>
-    <a href="/dcc/public/var_schema/{{$crf}}/{{$prevVarNum}}">Previous {{$prevVarNum}}</a>
+    <a href="/dcc/public/var_schema/{{$crf}}/{{$prevVarNum}}" class="btn btn-default">Previous Var</a>
+    <a href="/dcc/public/var_schema/{{$crf}}/{{$nextVarNum}}" class="btn btn-default">Next Var</a>
     
     
     

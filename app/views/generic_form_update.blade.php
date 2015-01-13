@@ -1,7 +1,6 @@
 @extends('layout')
 @section('content')
     <h2>{{$tableName}}  Generic Form Update</h2>
-	<h3>Selected {{$this_crf}}</h3>
 	
     @if ( ! $errors->isEmpty() )
     <div class="row">

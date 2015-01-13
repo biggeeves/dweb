@@ -18,7 +18,7 @@
                             @if (isset($tables)) 
                                 @foreach ($tables as $tablename)
                                     @foreach($tablename as $key=>$value)
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="generic?crf={{$value}}">{{$value}}</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/generic/{{$value}}" >{{$value}}</a></li>
                                     @endforeach
                                 @endforeach			  
                             @else

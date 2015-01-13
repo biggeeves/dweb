@@ -174,8 +174,7 @@ Route::get( 'sir_table', array(
 }));
 
 
-Route::get( 'generic', 
-    function() 
+Route::get( 'generic/{crf}', function($crf) 
 {
     $allTables = DB::select('SHOW TABLES');
     if (isset($allTables)) {
@@ -193,47 +192,43 @@ Route::get( 'generic',
 	 }
 	if (!isset( $crudOperation ) ) $crudOperation = 'r';
 
-	if (Input::has( 'crf' ) ) {
-		$requestedCRF = Input::get('crf');
-	 }
-	 
-	if (!isset( $requestedCRF ) ) $requestedCRF = $firstTable;
+	if (!isset( $crf ) ) $crf = $firstTable;
 
-    $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
-    $valueSchema = SchemaValueLabel::where('table_name', '=', $requestedCRF)->get();
+    $varSchema = SchemaVariable::where('table_name', '=', $crf)->get();
+    $valueSchema = SchemaValueLabel::where('table_name', '=', $crf)->get();
 
     if (Input::has( 'caseid' ) ) {
 		$caseid = Input::get('caseid');
 	 }
 
 	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
+		$this_crf = DB::table( $crf) ->where('id_num', $caseid)->first();
 	}
 	else {
-		$this_crf = DB::table( $requestedCRF) -> get();
+		$this_crf = DB::table( $crf) -> get();
 	}
 
 
 	$allTables = DB::select('SHOW TABLES');
 
-    $columns = Schema::getColumnListing( $requestedCRF );
+    $columns = Schema::getColumnListing( $crf );
 	
 	if (isset( $caseid )) {
 		if ($crudOperation == 'r') 
 		{
-			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)
+			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
+			->with( 'this_crf', $crf) ->with( 'tables', $allTables )->with('caseid', $caseid)
             ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
 		} elseif ($crudOperation == 'u') 
 		{ 
-			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-			->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)
+			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
+			->with( 'this_crf', $crf) ->with( 'tables', $allTables )->with('caseid', $caseid)
             ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
 		}
 	}
 	else {
-		return View::make('generic_table')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables ) ;
+		return View::make('generic_table')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
+		->with( 'this_crf', $crf) ->with( 'tables', $allTables ) ;
 	}
 	return View::make('hello');
 });
@@ -257,28 +252,35 @@ Route::get( 'sample_blog', function()
 Route::post('crud', function()
 {
 	if (Input::has( 'crf' ) ) {
-		$requestedCRF = Input::get('crf');
+		$crf = Input::get('crf');
 	 }
 	 
-	$slname = Input::get('slname');
+    $slname = Input::get('slname');
 	$sfname = Input::get('sfname');
 	$statusx = Input::get('status');
-	 
 
-if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
-    $columns = Schema::getColumnListing( $requestedCRF );
+    $allTables = DB::select('SHOW TABLES');
+    foreach ($allTables as $tablename) {
+        foreach($tablename as $key=>$value) {
+          	if( substr( $value, 1, 3)  == 'crf') {
+                $firstTable = $value;
+            }
+        }
+    }
+    if (!isset( $crf ) ) $crf = $firstTable;
+    
+    $columns = Schema::getColumnListing( $crf );
 
 	if (Input::has( 'id_num' ) ) {
 		$caseid = Input::get('id_num');
-	 }
+    }
 	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
+		$this_crf = DB::table( $crf) ->where('id_num', $caseid)->first();
 	}
-	$allTables = DB::select('SHOW TABLES');
     
 	if (Input::has( 'submit' ) ) {
 		$dccSubmit = Input::get('submit');
-	 }
+    }
     if($dccSubmit == 'delete') {
         if( isset( $caseid ) ) {
             $trials = Trial::where('id_num', '=', $caseid)->first();
@@ -288,7 +290,6 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
             } else{
                 Session::flash('message', "Sorry, That record could not be found.  Try something else.");
             }
-
             return View::make('index')->with( 'tables', $allTables ) ;
         }
     }
@@ -314,8 +315,8 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 		// redirect our user back to the form with the errors from the validator
 		//return Redirect::to('generic')
 		//	->withErrors($validator)->with( 'tables', $allTables );
-        return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->withErrors($validator)->with('caseid', $caseid) ;
+        return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
+		->with( 'tables', $allTables )->withErrors($validator)->with('caseid', $caseid) ;
 
 }
 	
@@ -325,10 +326,10 @@ if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
 	$trials->status = $statusx;		
 	$trials->save();
 	
-	$this_crf = DB::table( $requestedCRF) ->where('id_num', $caseid)->first();
+	$this_crf = DB::table( $crf) ->where('id_num', $caseid)->first();
 
-    return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
-		->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid) ;
+    return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
+		->with( 'tables', $allTables )->with('caseid', $caseid) ;
 
 });
 
@@ -351,28 +352,36 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
     
 Route::get( 'crf_schema/{crf}', function($crf) 
 {
-    $requestedCRF = $crf;
-    if (!isset( $requestedCRF ) ) $requestedCRF = 'crf_ptrack';
-    $varSchema = SchemaVariable::where('table_name', '=', $requestedCRF)->get();
+    $allTables = DB::select('SHOW TABLES');
+    foreach ($allTables as $tablename) {
+        foreach($tablename as $key=>$value) {
+          	if( substr( $value, 1, 3)  == 'crf') {
+                $firstTable = $value;
+            }
+        }
+    }
+    if (!isset( $crf ) ) $crf = $firstTable;
+    $tableMeta = Schema_table::where('table_name', '=', $crf)->first();
+    $tableLabel = $tableMeta->table_label;
     
-    foreach( $varSchema as $schemaRow ) {
+    $varTable = SchemaVariable::where('table_name', '=', $crf)->get();
+    $columns = Schema::getColumnListing('schema_variable');
+    foreach( $varTable as $schemaRow ) {
         $varLine[] = $schemaRow->toArray(); 
     }
-    if(empty($varLine) ) $varLine[0] = 'empty';
     
-    $allTables = DB::select('SHOW TABLES');
-    $tableName = $requestedCRF;
-    $columns = Schema::getColumnListing('schema_variable');
+    $columnNames = Schema::getColumnListing('schema_variable');
 
      return View::make('table_schema')
-        ->with('tableName', $tableName)
-        ->with('schemaColumn', $columns)
-        ->with('tables', $allTables )
-        ->with('varLine', $varLine);
+        ->with( 'tables', $allTables )
+        ->with( 'tableLabel', $tableLabel)
+        ->with( 'crf', $crf)
+        ->with( 'columnNames', $columnNames)
+        ->with( 'varTable', $varLine );
 
 });
 
-Route::get( 'var_schema/{crf}/{varNum}', function($CRF, $varNum) 
+Route::get( 'var_schema/{crf}/{varNum}', function($crf, $varNum) 
 {
     if (!isset($varNum) ) $varNum = 1;
     $nextVarNum = $varNum + 1;
@@ -386,18 +395,21 @@ Route::get( 'var_schema/{crf}/{varNum}', function($CRF, $varNum)
             }
         }
     }
-    if (!isset( $CRF ) ) $CRF = $firstTable;
-    $varSchema = SchemaVariable::where('table_name', '=', $CRF)
-        ->where('id', $varNum)
-        ->get();
+    if (!isset( $crf ) ) $crf = $firstTable;
+
+    $tableMeta = Schema_table::where('table_name', '=', $crf)->first();
+    $tableLabel = $tableMeta->table_label;
+    $varSchema = SchemaVariable::where('table_name', '=', $crf)
+        ->where('id', $varNum)->get();
     foreach( $varSchema as $schemaRow ) {
         $varLine[] = $schemaRow->toArray(); 
     }
 
 
     return View::make('schema_var_update')
-    ->with( 'crf', $CRF)
     ->with( 'tables', $allTables )
+    ->with( 'crf', $crf)
+    ->with( 'tableLabel', $tableLabel)
     ->with( 'varLine', $varLine)
     ->with( 'nextVarNum', $nextVarNum)
     ->with( 'prevVarNum', $prevVarNum)
