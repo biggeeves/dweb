@@ -27,18 +27,13 @@
     <a href="/dcc/public/var_schema/{{$crf}}/{{$prevVarNum}}" class="btn btn-default">Previous Var</a>
     <a href="/dcc/public/var_schema/{{$crf}}/{{$nextVarNum}}" class="btn btn-default">Next Var</a>
     
-    
-    
     <div class="row">
         <div class="col-md-12 well">
         
-        {{ Form::open(array('url' => url('crud'), 'class'=>'form-horizontal', 'id'=>'frmFoo')) }}
-
+        {{ Form::open(array('url' => url('var_schema/crud'), 'class'=>'form-horizontal', 'id'=>'variable_schema')) }}
 		    {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
 		    {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
 			{{Form::hidden('crf', $crf)}}
-	
-    
             @foreach ($varLine as $short )
                 @foreach ($short as $key=>$value)
                 <div class="form-group">
@@ -56,6 +51,4 @@
         {{ Form::close() }}
         </div>
     </div>
-
-
 @stop
