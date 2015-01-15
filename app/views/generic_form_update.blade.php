@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-12 well">
         
-        {{ Form::open(array('url' => url('crud'), 'class'=>'form-horizontal', 'id'=>'frmFoo')) }}
+        {{ Form::open(array('url' => url('crud'), 'class'=>'form-horizontal', 'id'=>'crf_form')) }}
 
 		<form class="form-horizontal" role="form" action="crud"  method="POST">
 		    {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}

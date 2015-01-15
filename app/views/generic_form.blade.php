@@ -1,12 +1,8 @@
 @extends('layout')
 @section('content')
     <h2>{{$tableName}}  Generic Form View- Read Only</h2>
-		<a href="generic?caseid={{$caseid}}&crud=u&crf={{$this_crf}}">Edit {{$caseid}}</a>
-
-
-                        
-	<h3>Selected {{$this_crf}}</h3>
-	@if (count($crf) == 0 )
+		<a href="{{$tableName}}?caseid={{$caseid}}&crud=u">Edit {{$caseid}}</a>
+        @if (count($crf) == 0 )
 		<p>There are no records in that table</p>
 	@else
 		<form class="form-horizontal" role="form">
@@ -36,18 +32,19 @@
                                 }
                             }
                         ?>
-						<label for="{{$key}}" class="col-sm-2 control-label">{{$varLabel}}</label>
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id="{{$key}}" value="{{$value}}"
+                        <label for="{{$key}}" class="col-sm-6 control-label" style="text-align:left;">{{$varLabel}}</label>
+						<div class="col-sm-3">
+							<input type="text" class="form-control" id="{{$key}}" name="{{$key}}" value="{{$value}}"
+                            @if (count($valueLabels) > 0 ) oninput="SelectListFromValue('{{$key}}','{{$key}}_list');" @endif
                             @if( isset($varMin) ) min="{{$varMin}}" @endif 
                             @if( isset($varMax) ) max="{{$varMax}}" @endif 
                             >
 						</div>
-						<div class="col-sm-5">
+						<div class="col-sm-3">
                             @if ( count($valueLabels) > 0 )
-                                <select>
+                                <select oninput="SelectValueFromList('{{$key}}_list','{{$key}}');" name="{{$key}}_list" id="{{$key}}_list">
                                     @foreach ($valueLabels as $labelValue=>$label) 
-                                        <option class="form-control" value="{{$labelValue}}">{{$label}}</option>
+                                        <option class="form-control" value="{{$labelValue}}" >{{$label}}</option>
                                     @endforeach
                                 </select>
                             @endif

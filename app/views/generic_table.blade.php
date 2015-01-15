@@ -5,7 +5,7 @@
 	@if (count($crf) == 0 )
 		<p>There are no records in that table</p>
 	@else
-		<p>There are {{count($crf)}} record(s) in that table</p>
+		<p>There are {{count($crf)}} record(s) in that table.  CASEID: {{$db_caseid}}</p>
 		<table class="table table-striped table-bordered table-hover">
 			<tr>
 				@foreach( $columns as $column )
@@ -15,8 +15,7 @@
 			@foreach( $crf as $this_row )
                 <tr>
 				@foreach($this_row as $key=>$value)
-					<?php if( $key === 'id_num' )   { $value = "<a href='generic?caseid=$value&crf=$this_crf'>$value</a>"; } ?>
-
+					<?php if( $key === $db_caseid )   { $value = "<a href='$this_crf?caseid=$value'>$value</a>"; } ?>
 					<td>{{$value}}</td>
 				@endforeach
                 </tr>

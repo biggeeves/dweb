@@ -175,6 +175,9 @@ Route::get( 'generic/{crf}', function($crf)
         }
     }
 
+    $DBConfig = Db_config::first()->toArray();
+    $DBCaseId = strtolower($DBConfig['db_caseid']);
+
 	if (Input::has('crud')) {
 		$crudOperation = Input::get('crud');
 	 }
@@ -190,12 +193,11 @@ Route::get( 'generic/{crf}', function($crf)
 	 }
 
 	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $crf) ->where('id_num', $caseid)->first();
+		$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
 	}
 	else {
 		$this_crf = DB::table( $crf) -> get();
 	}
-
 
 	$allTables = DB::select('SHOW TABLES');
 
@@ -204,33 +206,40 @@ Route::get( 'generic/{crf}', function($crf)
 	if (isset( $caseid )) {
 		if ($crudOperation == 'r') 
 		{
-			return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
-			->with( 'this_crf', $crf) ->with( 'tables', $allTables )->with('caseid', $caseid)
-            ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
+			return View::make('generic_form')
+            ->with('crf', $this_crf)
+            ->with('tableName', $crf)
+            ->with('db_caseid', $DBCaseId)
+            ->with('columns', $columns)
+            ->with('tables', $allTables )
+            ->with('caseid', $caseid)
+            ->with('varSchema', $varSchema)
+            ->with('valueSchema',$valueSchema);
 		} elseif ($crudOperation == 'u') 
 		{ 
-			return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
-			->with( 'this_crf', $crf) ->with( 'tables', $allTables )->with('caseid', $caseid)
-            ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
+			return View::make('generic_form_update')
+            ->with('crf', $this_crf)
+            ->with('tableName', $crf)
+            ->with('db_caseid', $DBCaseId)
+            ->with('columns', $columns)
+            ->with('tables', $allTables )
+            ->with('caseid', $caseid)
+            ->with('varSchema', $varSchema)
+            ->with('valueSchema',$valueSchema);
 		}
 	}
 	else {
-		return View::make('generic_table')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
-		->with( 'this_crf', $crf) ->with( 'tables', $allTables ) ;
+		return View::make('generic_table')
+        ->with('db_caseid', $DBCaseId)
+        ->with('crf', $this_crf)
+		->with('this_crf', $crf) 
+        ->with('tableName', $crf)
+        ->with('columns', $columns)
+        ->with('tables', $allTables ) ;
 	}
 	return View::make('hello');
 });
 
-
-Route::get( 'sir_form', function() 
-{
-     $ptracks = Crf_ptrack::all();
-	 $tableName = 'Crf_Ptrack';
-	 $columns = Schema::getColumnListing('crf_ptrack');
-
-     return View::make('sir_form')->with( 'ptracks', $ptracks)->with('tableName', $tableName)->with('columns', $columns);
-
-});
 
 Route::get( 'sample_blog', function() 
 {
@@ -326,7 +335,7 @@ Route::post('crud', function()
 });
 
 Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num) 
-	{
+{
 	$allTables = DB::select('SHOW TABLES');
 		// return our view and Nerd information
 		return View::make('nerd-edit') // pulls app/views/nerd-edit.blade.php
@@ -336,7 +345,7 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
 	// route to process the form
 	Route::post('nerd/edit', function() {
 		// process our form
-	});
+});
     
     
 Route::get( 'crf_schema/{crf}', function($crf) 
