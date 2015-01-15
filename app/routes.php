@@ -197,6 +197,7 @@ Route::get( 'generic/{crf}', function($crf)
 
 	$allTables = DB::select('SHOW TABLES');
 
+
     $columns = Schema::getColumnListing( $crf );
 	
 	if (isset( $caseid )) {
@@ -231,8 +232,9 @@ Route::post('crud', function()
 {
 	if (Input::has( 'crf' ) ) {
 		$crf = Input::get('crf');
-	}
-    $tableClass = ucfirst($crf);
+	} else {
+        return ('There was an error with the crf value');
+    }
 	 
     $slname =  Input::get('slname');
 	$sfname =  Input::get('sfname');
@@ -240,7 +242,7 @@ Route::post('crud', function()
     
     $DBConfig = Db_config::first()->toArray();
     $DBCaseId = strtolower($DBConfig['db_caseid']);
-    $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
+    $varSchema = Schema_variable::where('table_name', '=', $crf)->get();  
     $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
     
     $allTables = DB::select('SHOW TABLES');
@@ -251,8 +253,9 @@ Route::post('crud', function()
             }
         }
     }
-    if (!isset( $crf ) ) return ('There was an error with the crf value');
+    $tableClass = ucfirst($crf);  // Class names are case sensitive
     $columns = Schema::getColumnListing( $crf );
+      
     foreach ($columns as $eachColumn) {
         $fields[$eachColumn] = Input::get($eachColumn);  
     }
@@ -283,31 +286,37 @@ Route::post('crud', function()
         }
     }
 
-// create the validation rules ------------------------
+/* create the validation rules ------------------------
 	$rules = array(
-		'slname'             => 'required', 						// just a normal required validation
-		'sfname'            => 'required', 	// required and must be unique in the ducks table
-		'status'         => 'integer|min:0|max:44'
+		'slname' => 'required', 	// just a normal required validation
+		'sfname' => 'required', 	// required and must be unique in the ducks table
+		'status' => 'integer|min:0|max:44'
 	);
-    
+*/
+    $rules = array();
+    // for simplicity just make everything required during development
+    foreach ($varSchema->toArray() as $schemaRow) {
+        $rules[$schemaRow['variable_name']] = 'required';
+    }    
+
    	// do the validation ----------------------------------
 	// validate against the inputs from our form
 	$validator = Validator::make(Input::all(), $rules);
     
     
    	// check if the validator failed -----------------------
-	if ($validator->passes()) {
+	if ($validator->fails()) {
 
 		// get the error messages from the validator
 		$messages = $validator->messages();
 
 		// redirect our user back to the form with the errors from the validator
         return View::make('generic_form')
-        ->with( 'crud', 'u')
-        ->with( 'crf', $this_crf)
+        ->with('crud', 'u')
+        ->with('crf', $this_crf)
         ->with('tableName', $crf)
         ->with('columns', $columns)
-		->with( 'tables', $allTables )
+		->with('tables', $allTables )
         ->withErrors($validator)
         ->with('caseid', $caseid)
         ->with('varSchema', $varSchema)
@@ -327,12 +336,10 @@ Route::post('crud', function()
         if($eachColumn == 'updated_at') continue;
         if($eachColumn == 'created_at') continue;
         if($eachColumn == 'dstamp') continue;
+        if($eachColumn == 'dccedits') { $fields[$eachColumn] = $tempTable['dccedits']+1;}
         $tempTable->$eachColumn = $fields[$eachColumn];  
     }
     
-	//$tempTable->slname = $slname;		
-	//$tempTable->sfname = $sfname;		
-	//$tempTable->status = $statusx;		
 	$tempTable->save();
 	
 	$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
@@ -491,7 +498,6 @@ Route::post( 'var_schema/crud', function()
             ->withErrors($validator);
 
     }
-
 
     $varSchema = Schema_variable::where('id', '=', $id)->first();
         
