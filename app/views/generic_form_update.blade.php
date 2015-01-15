@@ -30,8 +30,7 @@
         
         {{ Form::open(array('url' => url('crud'), 'class'=>'form-horizontal', 'id'=>'crf_form')) }}
 
-		<form class="form-horizontal" role="form" action="crud"  method="POST">
-		    {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
+            {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
 		    {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
 			{{Form::hidden('crf', $tableName)}}
 			@foreach( $crf as $key=>$value )

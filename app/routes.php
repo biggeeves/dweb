@@ -100,10 +100,6 @@ Route::get('/a', array('before'=>'newYear', 'uses' => 'AController@showWelcome')
 Route::get('/a', 'AController@showWelcome');
 Route::get('/b', 'AController@showTable');
 Route::get('c/{someVar}', function ($someVar) {
-     $Ptrack = Crf_ptrack::all();
-     /* yet this one returns an error and I don't know why */
-	 $ohNo = Crf_xm::all();
-
     return "You added {$someVar}";
 });
 Route::get('/d/{passVar}', 'AController@passVar');
@@ -204,20 +200,10 @@ Route::get( 'generic/{crf}', function($crf)
     $columns = Schema::getColumnListing( $crf );
 	
 	if (isset( $caseid )) {
-		if ($crudOperation == 'r') 
+		if ($crudOperation == 'r'  | $crudOperation == 'u'  ) 
 		{
 			return View::make('generic_form')
-            ->with('crf', $this_crf)
-            ->with('tableName', $crf)
-            ->with('db_caseid', $DBCaseId)
-            ->with('columns', $columns)
-            ->with('tables', $allTables )
-            ->with('caseid', $caseid)
-            ->with('varSchema', $varSchema)
-            ->with('valueSchema',$valueSchema);
-		} elseif ($crudOperation == 'u') 
-		{ 
-			return View::make('generic_form_update')
+            ->with('crud', $crudOperation)
             ->with('crf', $this_crf)
             ->with('tableName', $crf)
             ->with('db_caseid', $DBCaseId)
@@ -241,21 +227,22 @@ Route::get( 'generic/{crf}', function($crf)
 });
 
 
-Route::get( 'sample_blog', function() 
-{
-     return View::make('sample_blog');
-});
-
 Route::post('crud', function()
 {
 	if (Input::has( 'crf' ) ) {
 		$crf = Input::get('crf');
-	 }
+	}
+    $tableClass = ucfirst($crf);
 	 
-    $slname = Input::get('slname');
-	$sfname = Input::get('sfname');
+    $slname =  Input::get('slname');
+	$sfname =  Input::get('sfname');
 	$statusx = Input::get('status');
-
+    
+    $DBConfig = Db_config::first()->toArray();
+    $DBCaseId = strtolower($DBConfig['db_caseid']);
+    $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
+    $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
+    
     $allTables = DB::select('SHOW TABLES');
     foreach ($allTables as $tablename) {
         foreach($tablename as $key=>$value) {
@@ -264,25 +251,30 @@ Route::post('crud', function()
             }
         }
     }
-    if (!isset( $crf ) ) $crf = $firstTable;
-    
+    if (!isset( $crf ) ) return ('There was an error with the crf value');
     $columns = Schema::getColumnListing( $crf );
-
-	if (Input::has( 'id_num' ) ) {
-		$caseid = Input::get('id_num');
+    foreach ($columns as $eachColumn) {
+        $fields[$eachColumn] = Input::get($eachColumn);  
+    }
+	if (Input::has( $DBCaseId ) ) {
+		$caseid = Input::get($DBCaseId);
     }
 	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $crf) ->where('id_num', $caseid)->first();
-	}
+		$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
+    } else {
+        return ('There has been an error with the caseid');
+    }
     
 	if (Input::has( 'submit' ) ) {
 		$dccSubmit = Input::get('submit');
     }
     if($dccSubmit == 'delete') {
+        $crud = 'd';
+
         if( isset( $caseid ) ) {
-            $trials = Trial::where('id_num', '=', $caseid)->first();
-            if (isset($trials) ) {
-                $trials->delete();
+                $tempTable = $tableClass::where($DBCaseId, '=', $caseid)->first();
+            if (isset($tempTable) ) {
+                $tempTable->delete();
                 Session::flash('message', "Successfully deleted $caseid");
             } else{
                 Session::flash('message', "Sorry, That record could not be found.  Try something else.");
@@ -304,33 +296,57 @@ Route::post('crud', function()
     
     
    	// check if the validator failed -----------------------
-	if ($validator->fails()) {
+	if ($validator->passes()) {
 
 		// get the error messages from the validator
 		$messages = $validator->messages();
 
 		// redirect our user back to the form with the errors from the validator
-		//return Redirect::to('generic')
-		//	->withErrors($validator)->with( 'tables', $allTables );
-        return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $crf)->with('columns', $columns)
-		->with( 'tables', $allTables )->withErrors($validator)->with('caseid', $caseid) ;
-
-    }
-	
-    $trials = Trial::where('id_num', '=', $caseid)->first();
-	$trials->slname = $slname;		
-	$trials->sfname = $sfname;		
-	$trials->status = $statusx;		
-	$trials->save();
-	
-	$this_crf = DB::table( $crf) ->where('id_num', $caseid)->first();
-
-    return View::make('generic_form_update')
-        ->with('crf', $this_crf)
+        return View::make('generic_form')
+        ->with( 'crud', 'u')
+        ->with( 'crf', $this_crf)
         ->with('tableName', $crf)
         ->with('columns', $columns)
-		->with('tables', $allTables )
-        ->with('caseid', $caseid) ;
+		->with( 'tables', $allTables )
+        ->withErrors($validator)
+        ->with('caseid', $caseid)
+        ->with('varSchema', $varSchema)
+        ->with('valueSchema',$valueSchema);
+    }
+	
+    $tempTable = $tableClass::where($DBCaseId, '=', $caseid)->first();
+    
+    foreach ($columns as $eachColumn) {
+    // General Improvement
+    // must figure out how to handle dates and times properly!!!!
+        if($eachColumn == 'mhdate') {
+            $fields[$eachColumn] = date('Y-m-d', strtotime(str_replace('-', '/', $fields[$eachColumn])));
+        }
+        if($eachColumn == 'dccdate') continue;
+        if($eachColumn == 'dcctime') continue;
+        if($eachColumn == 'updated_at') continue;
+        if($eachColumn == 'created_at') continue;
+        if($eachColumn == 'dstamp') continue;
+        $tempTable->$eachColumn = $fields[$eachColumn];  
+    }
+    
+	//$tempTable->slname = $slname;		
+	//$tempTable->sfname = $sfname;		
+	//$tempTable->status = $statusx;		
+	$tempTable->save();
+	
+	$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
+
+    return View::make('generic_form')
+            ->with('crud', 'u')
+            ->with('crf', $this_crf)
+            ->with('tableName', $crf)
+            ->with('columns', $columns)
+            ->with('tables', $allTables )
+            ->withErrors($validator)
+            ->with('caseid', $caseid)
+            ->with('varSchema', $varSchema)
+            ->with('valueSchema',$valueSchema);
 
 });
 
@@ -348,7 +364,7 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
 });
     
     
-Route::get( 'crf_schema/{crf}', function($crf) 
+Route::get('crf_schema/{crf}', function($crf) 
 {
     $allTables = DB::select('SHOW TABLES');
     foreach ($allTables as $tablename) {

@@ -1,11 +1,40 @@
 @extends('layout')
 @section('content')
-    <h2>{{$tableName}}  Generic Form View- Read Only</h2>
-		<a href="{{$tableName}}?caseid={{$caseid}}&crud=u">Edit {{$caseid}}</a>
-        @if (count($crf) == 0 )
+    <h2>{{$tableName}}  Generic Form View
+    	@if($crud == 'r') (Read Only) <a href="{{$tableName}}?caseid={{$caseid}}&crud=u">Edit {{$caseid}}</a> 
+        @else Update
+        @endif
+    </h2>
+
+    @if ( ! $errors->isEmpty() )
+    <div class="row">
+        <div class="col-md-4 alert alert-danger">Please fix these errors before continuing on.</div>
+        <div class="col-md-6 col-md-offset-2 alert alert-danger">
+            <ul>
+        @foreach ( $errors->all() as $error )
+            <li>{{ $error }} </li>
+        @endforeach
+            </ul>
+        </div>
+    </div>
+    @elseif ( Session::has( 'message' ) )
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2 alert alert-danger">There are session messages</div>
+        <div class="col-md-6 col-md-offset-2 alert alert-success">{{ Session::get( 'message' ) }}</div>
+    </div>
+    @endif
+
+
+
+    @if (count($crf) == 0 )
 		<p>There are no records in that table</p>
 	@else
-		<form class="form-horizontal" role="form">
+        {{ Form::open(array('url' => url('crud'), 'class'=>'form-horizontal', 'id'=>'crf_form', 'role'=>'form')) }}
+            @if ($crud == 'u')
+                {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
+                {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
+                {{Form::hidden('crf', $tableName)}}
+            @endif
 			@foreach( $crf as $key=>$value )
                 <?php 
                     $varLabel = $key; 
@@ -42,15 +71,18 @@
 						</div>
 						<div class="col-sm-3">
                             @if ( count($valueLabels) > 0 )
-                                <select oninput="SelectValueFromList('{{$key}}_list','{{$key}}');" name="{{$key}}_list" id="{{$key}}_list">
+                                <select oninput="SelectValueFromList('{{$key}}_list','{{$key}}');" name="{{$key}}_list" id="{{$key}}_list" class="form-control" >
+                                    <option value=""></option>
                                     @foreach ($valueLabels as $labelValue=>$label) 
-                                        <option class="form-control" value="{{$labelValue}}" >{{$label}}</option>
+                                        <option value="{{$labelValue}}" 
+                                        @if ($labelValue == $value) selected="selected" @endif
+                                        >{{$label}}</option>
                                     @endforeach
                                 </select>
                             @endif
 						</div>
 					</div>
 			@endforeach
-		</form>
+		{{Form::close()}}
 	@endif
 @stop

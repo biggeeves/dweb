@@ -1,7 +1,6 @@
 @extends('layout')
 @section('content')
     <h2>{{$tableName}}  Generic Table View</h2>
-	<h3>Selected {{$this_crf}}</h3>
 	@if (count($crf) == 0 )
 		<p>There are no records in that table</p>
 	@else
@@ -15,7 +14,7 @@
 			@foreach( $crf as $this_row )
                 <tr>
 				@foreach($this_row as $key=>$value)
-					<?php if( $key === $db_caseid )   { $value = "<a href='$this_crf?caseid=$value'>$value</a>"; } ?>
+					<?php if( $key === $db_caseid )   { $value = "<a href='$tableName?caseid=$value'>$value</a>"; } ?>
 					<td>{{$value}}</td>
 				@endforeach
                 </tr>
