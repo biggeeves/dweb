@@ -1,7 +1,7 @@
 @extends('layout')
 @section('content')
     <div class="row">
-        <div class="col-md-6 col-md-offset-2">Welcome.  Please log in.</div>
+        <h2 class="col-md-6 col-md-offset-2">Welcome.  Please log in.</h2>
     </div>
     @if( Session::has( 'message' ) )
         <div class="row">

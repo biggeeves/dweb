@@ -29,7 +29,7 @@
     @if (count($crf) == 0 )
 		<p>There are no records in that table</p>
 	@else
-        {{ Form::open(array('url' => url('crud'), 'class'=>'form-horizontal', 'id'=>'crf_form', 'role'=>'form')) }}
+        {{ Form::open(array('url' => url('forms/crud'), 'class'=>'form-horizontal', 'id'=>'crf_form', 'role'=>'form')) }}
             @if ($crud == 'u')
                 {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
                 {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
@@ -61,7 +61,7 @@
                                 }
                             }
                         ?>
-                        <label for="{{$key}}" class="col-sm-6 control-label" style="text-align:left;">{{$varLabel}}</label>
+                        <label for="{{$key}}" class="col-sm-6 control-label" style="text-align:left;" title="{{$key}}">{{$varLabel}}</label>
 						<div class="col-sm-3">
 							<input type="text" class="form-control" id="{{$key}}" name="{{$key}}" value="{{$value}}"
                             @if (count($valueLabels) > 0 ) oninput="SelectListFromValue('{{$key}}','{{$key}}_list');" @endif

@@ -29,11 +29,6 @@
                 <File name="app\config\view.php" />
                 <File name="app\config\workbench.php" />
             </Folder>
-            <Folder name="controllers">
-                <File name="app\controllers\.gitkeep" />
-                <File name="app\controllers\BaseController.php" />
-                <File name="app\controllers\HomeController.php" />
-            </Folder>
             <Folder name="database">
                 <Folder name="migrations">
                     <File name="app\database\migrations\.gitkeep" />
@@ -51,12 +46,6 @@
                     <File name="app\lang\en\reminders.php" />
                     <File name="app\lang\en\validation.php" />
                 </Folder>
-            </Folder>
-            <Folder name="models">
-                <File name="app\models\crf_ptrack.php" />
-                <File name="app\models\User.php" />
-                <File name="app\models\Trial.php" />
-                <File name="app\models\nerd.php" />
             </Folder>
             <Folder name="start">
                 <File name="app\start\artisan.php" />
@@ -100,10 +89,6 @@
                 </Folder>
                 <File name="app\storage\.gitignore" />
             </Folder>
-            <Folder name="tests">
-                <File name="app\tests\ExampleTest.php" />
-                <File name="app\tests\TestCase.php" />
-            </Folder>
             <Folder name="views">
                 <Folder name="emails">
                     <Folder name="auth">
@@ -126,6 +111,41 @@
             </Folder>
             <File name="app\filters.php" />
             <File name="app\routes.php" />
+            <Folder name="models">
+                <File name="app\models\Crf_Address.php" />
+                <File name="app\models\crf_bp.php" />
+                <File name="app\models\Crf_Ccd_Copy.php" />
+                <File name="app\models\Crf_Contacts.php" />
+                <File name="app\models\Crf_Demog.php" />
+                <File name="app\models\Crf_Dna_Inv.php" />
+                <File name="app\models\Crf_Medhist.php" />
+                <File name="app\models\crf_pi.php" />
+                <File name="app\models\crf_ptrack.php" />
+                <File name="app\models\crf_xm.php" />
+                <File name="app\models\Db_config.php" />
+                <File name="app\models\nerd.php" />
+                <File name="app\models\Schema_table.php" />
+                <File name="app\models\Schema_value_labels.php" />
+                <File name="app\models\Schema_variable.php" />
+                <File name="app\models\Trial.php" />
+                <File name="app\models\User.php" />
+            </Folder>
+            <Folder name="tests">
+                <File name="app\tests\CrfTest.php" />
+                <File name="app\tests\ExampleTest.php" />
+                <File name="app\tests\HomeTest.php" />
+                <File name="app\tests\TestCase.php" />
+            </Folder>
+            <Folder name="controllers">
+                <File name="app\controllers\.gitkeep" />
+                <File name="app\controllers\AController.php" />
+                <File name="app\controllers\BaseController.php" />
+                <File name="app\controllers\CrfSchemaContorller.php" />
+                <File name="app\controllers\FormsContorller.php" />
+                <File name="app\controllers\HomeController.php" />
+                <File name="app\controllers\RegisterController.php" />
+                <File name="app\controllers\VarSchemaController.php" />
+            </Folder>
         </Folder>
         <Folder name="bootstrap">
             <File name="bootstrap\autoload.php" />

@@ -8,7 +8,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{URL::to('/')}}">Generic Database</a>
+                <a class="navbar-brand" href="{{URL::to('/')}}">@if(isset($DBNAME)){{$DBName }}@else Welcome @endif</a>
             </div>
             <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
                 <ul class="nav navbar-nav">
@@ -18,7 +18,7 @@
                             @if (isset($tables)) 
                                 @foreach ($tables as $tablename)
                                     @foreach($tablename as $key=>$value)
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/generic/{{$value}}" >{{$value}}</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/forms/{{$value}}" >{{$value}}</a></li>
                                     @endforeach
                                 @endforeach			  
                             @else

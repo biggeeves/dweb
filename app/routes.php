@@ -37,7 +37,7 @@ Route::get('/login', function ()
 
 Route::post('login', function () 
 {
-$cred2 = array( "user_login" => Input::get('user_login'),
+    $cred2 = array( "user_login" => Input::get('user_login'),
 		"password" => Input::get('user_password')
 	);
 	
@@ -45,13 +45,12 @@ $cred2 = array( "user_login" => Input::get('user_login'),
 	 // return ( 'You are authenticated' );
         return Redirect::intended('/');
     }
-    
-    
+       
 	$x_debug = implode(",", $cred2 ) ;
     $hashedPassword = Hash::make('mypassword');
-    if (Hash::check(Input::get('user_password'), $hashedPassword))
-{   return ('password match<br>' . Input::get('user_password'). "=" . $hashedPassword); 
-}
+    if (Hash::check(Input::get('user_password'), $hashedPassword)) {   
+        return ('password match<br>' . Input::get('user_password'). "=" . $hashedPassword); 
+    }
 	
     Session::flash('message', $x_debug);
 
@@ -64,8 +63,6 @@ Route::get('/logout', function ()
     Auth::logout();
     return View::make('logout');
 });
-
-
 
 // Route::get('login', array('as' => 'login', function () {return 'login'; }))->before('guest');
 
@@ -83,8 +80,6 @@ Route::post('thanks', function() {
     $theEmail = Input::get('email');
     return View::make('thanks')->with('theEmail', $theEmail);
 });
-
-
 
 /*
 Route::get('/a', array(
@@ -157,205 +152,9 @@ Route::get( 'sir_table', array(
 
 }));
 
+Route::get('forms/{crf}', ['uses' =>'FormController@showForm', 'as'=>'showForm'] );
 
-Route::get( 'generic/{crf}', function($crf) 
-{
-    $allTables = DB::select('SHOW TABLES');
-    if (isset($allTables)) {
-        foreach ($allTables as $tablename) {
-            foreach($tablename as $key=>$value) {
-            	if( substr( $value, 0, 3)  == 'crf') {
-                    $firstTable = $value;
-                }
-            }
-        }
-    }
-
-    $DBConfig = Db_config::first()->toArray();
-    $DBCaseId = strtolower($DBConfig['db_caseid']);
-
-	if (Input::has('crud')) {
-		$crudOperation = Input::get('crud');
-	 }
-	if (!isset( $crudOperation ) ) $crudOperation = 'r';
-
-	if (!isset( $crf ) ) $crf = $firstTable;
-
-    $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
-    $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
-
-    if (Input::has( 'caseid' ) ) {
-		$caseid = Input::get('caseid');
-	 }
-
-	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
-	}
-	else {
-		$this_crf = DB::table( $crf) -> get();
-	}
-
-	$allTables = DB::select('SHOW TABLES');
-
-
-    $columns = Schema::getColumnListing( $crf );
-	
-	if (isset( $caseid )) {
-		if ($crudOperation == 'r'  | $crudOperation == 'u'  ) 
-		{
-			return View::make('generic_form')
-            ->with('crud', $crudOperation)
-            ->with('crf', $this_crf)
-            ->with('tableName', $crf)
-            ->with('db_caseid', $DBCaseId)
-            ->with('columns', $columns)
-            ->with('tables', $allTables )
-            ->with('caseid', $caseid)
-            ->with('varSchema', $varSchema)
-            ->with('valueSchema',$valueSchema);
-		}
-	}
-	else {
-		return View::make('generic_table')
-        ->with('db_caseid', $DBCaseId)
-        ->with('crf', $this_crf)
-		->with('this_crf', $crf) 
-        ->with('tableName', $crf)
-        ->with('columns', $columns)
-        ->with('tables', $allTables ) ;
-	}
-	return View::make('hello');
-});
-
-
-Route::post('crud', function()
-{
-	if (Input::has( 'crf' ) ) {
-		$crf = Input::get('crf');
-	} else {
-        return ('There was an error with the crf value');
-    }
-	 
-    $slname =  Input::get('slname');
-	$sfname =  Input::get('sfname');
-	$statusx = Input::get('status');
-    
-    $DBConfig = Db_config::first()->toArray();
-    $DBCaseId = strtolower($DBConfig['db_caseid']);
-    $varSchema = Schema_variable::where('table_name', '=', $crf)->get();  
-    $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
-    
-    $allTables = DB::select('SHOW TABLES');
-    foreach ($allTables as $tablename) {
-        foreach($tablename as $key=>$value) {
-          	if( substr( $value, 1, 3)  == 'crf') {
-                $firstTable = $value;
-            }
-        }
-    }
-    $tableClass = ucfirst($crf);  // Class names are case sensitive
-    $columns = Schema::getColumnListing( $crf );
-      
-    foreach ($columns as $eachColumn) {
-        $fields[$eachColumn] = Input::get($eachColumn);  
-    }
-	if (Input::has( $DBCaseId ) ) {
-		$caseid = Input::get($DBCaseId);
-    }
-	if ( isset( $caseid ) ) {
-		$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
-    } else {
-        return ('There has been an error with the caseid');
-    }
-    
-	if (Input::has( 'submit' ) ) {
-		$dccSubmit = Input::get('submit');
-    }
-    if($dccSubmit == 'delete') {
-        $crud = 'd';
-
-        if( isset( $caseid ) ) {
-                $tempTable = $tableClass::where($DBCaseId, '=', $caseid)->first();
-            if (isset($tempTable) ) {
-                $tempTable->delete();
-                Session::flash('message', "Successfully deleted $caseid");
-            } else{
-                Session::flash('message', "Sorry, That record could not be found.  Try something else.");
-            }
-            return View::make('index')->with( 'tables', $allTables ) ;
-        }
-    }
-
-/* create the validation rules ------------------------
-	$rules = array(
-		'slname' => 'required', 	// just a normal required validation
-		'sfname' => 'required', 	// required and must be unique in the ducks table
-		'status' => 'integer|min:0|max:44'
-	);
-*/
-    $rules = array();
-    // for simplicity just make everything required during development
-    foreach ($varSchema->toArray() as $schemaRow) {
-        $rules[$schemaRow['variable_name']] = 'required';
-    }    
-
-   	// do the validation ----------------------------------
-	// validate against the inputs from our form
-	$validator = Validator::make(Input::all(), $rules);
-    
-    
-   	// check if the validator failed -----------------------
-	if ($validator->fails()) {
-
-		// get the error messages from the validator
-		$messages = $validator->messages();
-
-		// redirect our user back to the form with the errors from the validator
-        return View::make('generic_form')
-        ->with('crud', 'u')
-        ->with('crf', $this_crf)
-        ->with('tableName', $crf)
-        ->with('columns', $columns)
-		->with('tables', $allTables )
-        ->withErrors($validator)
-        ->with('caseid', $caseid)
-        ->with('varSchema', $varSchema)
-        ->with('valueSchema',$valueSchema);
-    }
-	
-    $tempTable = $tableClass::where($DBCaseId, '=', $caseid)->first();
-    
-    foreach ($columns as $eachColumn) {
-    // General Improvement
-    // must figure out how to handle dates and times properly!!!!
-        if($eachColumn == 'mhdate') {
-            $fields[$eachColumn] = date('Y-m-d', strtotime(str_replace('-', '/', $fields[$eachColumn])));
-        }
-        if($eachColumn == 'dccdate') continue;
-        if($eachColumn == 'dcctime') continue;
-        if($eachColumn == 'updated_at') continue;
-        if($eachColumn == 'created_at') continue;
-        if($eachColumn == 'dstamp') continue;
-        if($eachColumn == 'dccedits') { $fields[$eachColumn] = $tempTable['dccedits']+1;}
-        $tempTable->$eachColumn = $fields[$eachColumn];  
-    }
-    
-	$tempTable->save();
-	
-	$this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
-
-    return View::make('generic_form')
-            ->with('crud', 'u')
-            ->with('crf', $this_crf)
-            ->with('tableName', $crf)
-            ->with('columns', $columns)
-            ->with('tables', $allTables )
-            ->withErrors($validator)
-            ->with('caseid', $caseid)
-            ->with('varSchema', $varSchema)
-            ->with('valueSchema',$valueSchema);
-
-});
+Route::post('forms/crud', ['uses' =>'FormController@updateForm', 'as'=>'updateForm'] );
 
 Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num) 
 {
@@ -371,158 +170,10 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
 });
     
     
-Route::get('crf_schema/{crf}', function($crf) 
-{
-    $allTables = DB::select('SHOW TABLES');
-    foreach ($allTables as $tablename) {
-        foreach($tablename as $key=>$value) {
-          	if( substr( $value, 1, 3)  == 'crf') {
-                $firstTable = $value;
-            }
-        }
-    }
-    if (!isset( $crf ) ) $crf = $firstTable;
-    $tableMeta = Schema_table::where('table_name', '=', $crf)->first();
-    if(!$tableMeta) {
-       $tableLabel = 'NA';
-    } else {
-        $tableLabel = $tableMeta->table_label;
-    }
-    
-    $varTable = Schema_variable::where('table_name', '=', $crf)->get();
-    if( count($varTable) == 0 ){
-        return ('That table does not have any associated schema');
-    }else{
-        foreach( $varTable as $schemaRow ) {
-            $varLine[] = $schemaRow->toArray(); 
-        }
-    }
-    
-    $columnNames = Schema::getColumnListing('schema_variable');
+Route::get('crf_schema/{crf}', ['uses' =>'CrfSchemaController@showCrfSchema', 'as'=>'crfSchema'] );
 
-     return View::make('table_schema')
-        ->with( 'tables', $allTables )
-        ->with( 'tableLabel', $tableLabel)
-        ->with( 'crf', $crf)
-        ->with( 'columnNames', $columnNames)
-        ->with( 'varTable', $varLine );
+Route::get('var_schema/{crf}/{varNum}', ['uses' =>'VarSchemaController@showVarSchema', 'as'=>'varSchema'] ); //($crf, $varNum)
 
-});
+Route::post('var_schema/crud',  ['uses' =>'VarSchemaController@updateVarSchema', 'as'=>'updateVarSchema'] );
 
-Route::get( 'var_schema/{crf}/{varNum}', function($crf, $varNum) 
-{
-    if (!isset($varNum) ) $varNum = 1;
-    $nextVarNum = $varNum + 1;
-    $prevVarNum = $varNum - 1;
-    if ( $prevVarNum < 1 ) $prevVarNum = 1;
-    $allTables = DB::select('SHOW TABLES');
-    foreach ($allTables as $tablename) {
-        foreach($tablename as $key=>$value) {
-          	if( substr( $value, 1, 3)  == 'crf') {
-                $firstTable = $value;
-            }
-        }
-    }
-    if (!isset( $crf ) ) $crf = $firstTable;
-
-    $tableMeta = Schema_table::where('table_name', '=', $crf)->first();
-    $tableLabel = $tableMeta->table_label;
-    $varSchema = Schema_variable::where('table_name', '=', $crf)
-        ->where('id', $varNum)->get();
-    foreach( $varSchema as $schemaRow ) {
-        $varLine[] = $schemaRow->toArray(); 
-    }
-
-
-    return View::make('schema_var_update')
-    ->with( 'tables', $allTables )
-    ->with( 'crf', $crf)
-    ->with( 'tableLabel', $tableLabel)
-    ->with( 'varLine', $varLine)
-    ->with( 'nextVarNum', $nextVarNum)
-    ->with( 'prevVarNum', $prevVarNum)
-    ;
-});
-
-Route::post( 'var_schema/crud', function() 
-{
-    $allTables = DB::select('SHOW TABLES');
-    foreach ($allTables as $tablename) {
-        foreach($tablename as $key=>$value) {
-          	if( substr( $value, 1, 3)  == 'crf') {
-                $firstTable = $value;
-            }
-        }
-    }
-    $id = Input::get('id');
-	$table_name = Input::get('table_name');
-	$variable_name = Input::get('variable_name');
-    $variable_label = Input::get('variable_label');
-
-    $dccSubmit = Input::get('submit');
-
-    $tableMeta = Schema_table::where('table_name', '=', $table_name)->first();
-    $tableLabel = $tableMeta->table_label;
-    
-    if ($dccSubmit == 'Delete') return ('Deletions Currently NOT allowed');
-    
-    // create the validation rules ------------------------
-	$rules = array(
-		'id'             => 'required', 		
-		'table_name'     => 'required', 	
-		'variable_name'  => 'required',
-		'variable_label'  => 'required'
-	);
-    
-   	// do the validation ----------------------------------
-	// validate against the inputs from our form
-	$validator = Validator::make(Input::all(), $rules);
-    
-    
-   	// check if the validator failed -----------------------
-	if ($validator->fails()) {
-
-		// get the error messages from the validator
-		$messages = $validator->messages();
-
-		// redirect our user back to the form with the errors from the validator
-		//return Redirect::to('generic')
-		//	->withErrors($validator)->with( 'tables', $allTables );
-        return View::make('schema_var_update')
-            ->with( 'tables', $allTables )
-            ->with( 'crf', $crf)
-            ->with( 'tableLabel', $tableLabel)
-            ->with( 'varLine', $varLine)
-            ->with( 'nextVarNum', $nextVarNum)
-            ->with( 'prevVarNum', $prevVarNum)
-            ->withErrors($validator);
-
-    }
-
-    $varSchema = Schema_variable::where('id', '=', $id)->first();
-        
-    // return (get_class_methods($varSchema));
-	$varSchema->variable_name = $variable_name;		
-	$varSchema->variable_label = $variable_label;		
-    $varSchema->save();
-    Session::flash('message', "Successfully Saved");
-    
-    $varSchema = Schema_variable::where('table_name', '=', $table_name)
-        ->where('id', $id)->get();
-    foreach( $varSchema as $schemaRow ) {
-        $varLine[] = $schemaRow->toArray(); 
-    }
-    $nextVarNum = $id + 1;
-    $prevVarNum = $id - 1;
-    if ( $prevVarNum < 1 ) $prevVarNum = 1;
-
-    return View::make('schema_var_update')
-    ->with( 'tables', $allTables )
-    ->with( 'crf', $table_name)
-    ->with( 'tableLabel', $tableLabel)
-    ->with( 'varLine', $varLine)
-    ->with( 'nextVarNum', $nextVarNum)
-    ->with( 'prevVarNum', $prevVarNum)
-    ;
-});
-
+Route::get('value_schema/{crf}/{varNum}', ['uses' =>'ValueSchemaController@showValueSchema', 'as'=>'valueSchema'] ); //($crf, $varNum)
