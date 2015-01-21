@@ -18,7 +18,7 @@
                             @if (isset($tables)) 
                                 @foreach ($tables as $tablename)
                                     @foreach($tablename as $key=>$value)
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/forms/{{$value}}" >{{$value}}</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::route('showForm', array('value'=>$value))}}">{{$value}}</a></li>
                                     @endforeach
                                 @endforeach			  
                             @else
@@ -34,7 +34,7 @@
                             @if (isset($tables))
                                 @foreach ($tables as $tablename)
                                     @foreach($tablename as $key=>$value)
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/dcc/public/crf_schema/{{$value}}">{{$value}}</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::route('crfSchema', array('value'=>$value))}}">{{$value}}</a></li>
                                     @endforeach
                                 @endforeach			  
                             @else

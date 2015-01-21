@@ -24,8 +24,8 @@
 		<p>There are no records in that table</p>
     @endif
     
-    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'prevLabelNum'=>$prevLabelNum))}}" class="btn btn-default">Previous Value Label</a>
-    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'nextLabelNum'=>$nextLabelNum))}}" class="btn btn-default">Next Value Label</a>
+    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'prevLabelNum'=>$prevLabelNum))}}" class="btn btn-default">Previous Value Label Does Not Work</a>
+    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'nextLabelNum'=>$nextLabelNum))}}" class="btn btn-default">Next Value Label Does Not Work</a>
     
     <div class="row">
         <div class="col-md-12 well">

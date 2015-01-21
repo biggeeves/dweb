@@ -24,8 +24,9 @@
 		<p>There are no records in that table</p>
     @endif
     
-    <a href="/dcc/public/var_schema/{{$crf}}/{{$prevVarNum}}" class="btn btn-default">Previous Var</a>
-    <a href="/dcc/public/var_schema/{{$crf}}/{{$nextVarNum}}" class="btn btn-default">Next Var</a>
+    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'prevVarNum'=>$prevVarNum))}}"class="btn btn-default">Previous Var</a>
+    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'nextVarNum'=>$nextVarNum))}}"class="btn btn-default">Next Var</a>
+    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'varName'=>$varLine[0]['variable_name']))}}"class="btn btn-default">Value Labels</a>
     
     <div class="row">
         <div class="col-md-12 well">
@@ -38,12 +39,11 @@
                 @foreach ($short as $key=>$value)
                 <div class="form-group">
                     <label for="{{$key}}" class="col-sm-2 control-label">{{$key}}</label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-8 col-sm-offset-1">
                         <input type="text" class="form-control" id="{{$key}}" name="{{$key}}" value="{{$value}}">
                     </div>
                     @if ($errors->has($key)) 
-                    <div class="col-md-6 col-md-offset-3 alert alert-danger">           {{$errors->first($key);}}
-                    </div>
+                        <div class="col-md-6 col-md-offset-3 alert alert-danger">{{$errors->first($key);}}</div>
                     @endif
                 </div>
                 @endforeach

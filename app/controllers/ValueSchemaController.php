@@ -2,7 +2,7 @@
 
 class ValueSchemaController extends BaseController {
 
-    public function showValueSchema ($crf, $varNum) {
+    public function showValueSchema ($crf, $varName) {
 
         
         $DBConfig = Db_config::first()->toArray();
@@ -25,10 +25,17 @@ class ValueSchemaController extends BaseController {
 
         $tableMeta  = Schema_table::where('table_name', '=', $crf)->first();
         $tableLabel = $tableMeta->table_label;
-        $varSchema  = Schema_value_labels::where('table_name', '=', $crf)
-            ->where('id', $varNum)->get();
-        foreach( $varSchema as $schemaRow ) {
+        $valueSchema  = Schema_value_labels::where('table_name', '=', $crf)
+            ->where('variable_name', $varName)->get();
+        
+        $varLine = [];
+        foreach( $valueSchema as $schemaRow ) {
             $varLine[] = $schemaRow->toArray(); 
+        }
+        
+        if( count($varLine) == 0) {
+            Session::flash('message', "No Value Labels");
+            return View::make('error')->with('tables', $allTables);
         }
 
         return View::make('schema_value_labels')

@@ -26,19 +26,20 @@ class VarSchemaController extends BaseController {
         $tableLabel = $tableMeta->table_label;
         $varSchema = Schema_variable::where('table_name', '=', $crf)
             ->where('id', $varNum)->get();
+
         foreach( $varSchema as $schemaRow ) {
             $varLine[] = $schemaRow->toArray(); 
         }
 
-
-        return View::make('schema_var_update')
+        return View::make('schema_var')
             ->with('DBName', $DBName)               
             ->with('tables', $allTables)
             ->with('crf', $crf)
             ->with('tableLabel', $tableLabel)
             ->with('varLine', $varLine)
-            ->with('nextVarNum', $nextVarNum)
-            ->with('prevVarNum', $prevVarNum);
+            ->with('prevVarNum', $prevVarNum)
+            ->with('thisVarNum', $varNum)
+            ->with('nextVarNum', $nextVarNum);
     }
     
     
@@ -90,7 +91,7 @@ class VarSchemaController extends BaseController {
             // redirect our user back to the form with the errors from the validator
             //return Redirect::to('generic')
             //	->withErrors($validator)->with( 'tables', $allTables );
-            return View::make('schema_var_update')
+            return View::make('schema_var')
                 ->with('DBName', $DBName)               
                 ->with('tables', $allTables)
                 ->with('crf', $crf)
@@ -122,7 +123,7 @@ class VarSchemaController extends BaseController {
         $prevVarNum = $id - 1;
         if ( $prevVarNum < 1 ) $prevVarNum = 1;
 
-        return View::make('schema_var_update')
+        return View::make('schema_var')
             ->with('DBName', $DBName)               
             ->with('tables', $allTables)
             ->with('crf', $table_name)

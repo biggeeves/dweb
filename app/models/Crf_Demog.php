@@ -1,5 +1,5 @@
 <?php
-class Crf_Demog extends Eloquent {
+class Crf_demog extends Eloquent {
 protected $table = 'crf_demog';
 protected $primaryKey = 'studyid';
 }

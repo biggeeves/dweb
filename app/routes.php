@@ -176,4 +176,4 @@ Route::get('var_schema/{crf}/{varNum}', ['uses' =>'VarSchemaController@showVarSc
 
 Route::post('var_schema/crud',  ['uses' =>'VarSchemaController@updateVarSchema', 'as'=>'updateVarSchema'] );
 
-Route::get('value_schema/{crf}/{varNum}', ['uses' =>'ValueSchemaController@showValueSchema', 'as'=>'valueSchema'] ); //($crf, $varNum)
+Route::get('value_schema/{crf}/{varName}', ['uses' =>'ValueSchemaController@showValueSchema', 'as'=>'valueSchema'] ); //($crf, $varName)

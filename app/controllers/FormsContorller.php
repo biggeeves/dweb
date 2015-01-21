@@ -47,7 +47,7 @@ class FormController extends BaseController {
         if (isset( $caseid )) {
             if ($crudOperation == 'r'  | $crudOperation == 'u'  ) 
             {
-                return View::make('generic_form')
+                return View::make('crf_form')
                     ->with('crud', $crudOperation)
                     ->with('crf', $this_crf)
                     ->with('tableName', $crf)
@@ -70,14 +70,23 @@ class FormController extends BaseController {
                 ->with('columns', $columns)
                 ->with('tables', $allTables ) ;
         }
-        return View::make('hello');
+        return View::make('error');
     }
         
       public function updateForm () {
-            if (Input::has( 'crf' ) ) {
+        $allTables = DB::select('SHOW TABLES');
+        foreach ($allTables as $tablename) {
+            foreach($tablename as $key=>$value) {
+                if( substr( $value, 1, 3)  == 'crf') {
+                    $firstTable = $value;
+                }
+            }
+        }
+        if (Input::has( 'crf' ) ) {
             $crf = Input::get('crf');
         } else {
-            return ('There was an error with the crf value');
+            Session::flash('message', 'There was an error with the crf value.');
+            return View::make('error')->with( 'tables', $allTables );
         }
          
         $slname =  Input::get('slname');
@@ -110,7 +119,8 @@ class FormController extends BaseController {
         if ( isset( $caseid ) ) {
             $this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
         } else {
-            return ('There has been an error with the caseid');
+            Session::flash('message', 'There has been an error with the caseid.');
+            return View::make('error')->with( 'tables', $allTables ) ;
         }
         
         if (Input::has( 'submit' ) ) {
@@ -150,7 +160,7 @@ class FormController extends BaseController {
             $messages = $validator->messages();
 
             // redirect our user back to the form with the errors from the validator
-            return View::make('generic_form')
+            return View::make('crf_form')
                 ->with('crud', 'u')
                 ->with('DBName', $DBName)               
                 ->with('db_caseid', $DBCaseId)
@@ -185,7 +195,7 @@ class FormController extends BaseController {
         
         $this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
 
-        return View::make('generic_form')
+        return View::make('crf_form')
                 ->with('crud', 'u')
                 ->with('DBName', $DBName)               
                 ->with('db_caseid', $DBCaseId)

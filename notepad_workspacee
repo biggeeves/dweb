@@ -89,26 +89,6 @@
                 </Folder>
                 <File name="app\storage\.gitignore" />
             </Folder>
-            <Folder name="views">
-                <Folder name="emails">
-                    <Folder name="auth">
-                        <File name="app\views\emails\auth\reminder.blade.php" />
-                    </Folder>
-                </Folder>
-                <File name="app\views\footer.blade.php" />
-                <File name="app\views\footer_js.blade.php" />
-                <File name="app\views\head.blade.php" />
-                <File name="app\views\hello.php" />
-                <File name="app\views\layout.blade.php" />
-                <File name="app\views\list_tables.blade.php" />
-                <File name="app\views\sir_table.blade.php" />
-                <File name="app\views\top_nav.blade.php" />
-                <File name="app\views\users.blade.php" />
-                <File name="app\views\generic_table.blade.php" />
-                <File name="app\views\generic_form.blade.php" />
-                <File name="app\views\generic_form_update.blade.php" />
-                <File name="app\views\nerd-edit.blade.php" />
-            </Folder>
             <File name="app\filters.php" />
             <File name="app\routes.php" />
             <Folder name="models">
@@ -136,6 +116,38 @@
                 <File name="app\tests\HomeTest.php" />
                 <File name="app\tests\TestCase.php" />
             </Folder>
+            <Folder name="views">
+                <Folder name="emails">
+                    <Folder name="auth">
+                        <File name="app\views\emails\auth\reminder.blade.php" />
+                    </Folder>
+                </Folder>
+                <File name="app\views\a.php" />
+                <File name="app\views\b.php" />
+                <File name="app\views\crf_form.blade.php" />
+                <File name="app\views\error.blade.php" />
+                <File name="app\views\footer.blade.php" />
+                <File name="app\views\footer_js.blade.php" />
+                <File name="app\views\generic_table.blade.php" />
+                <File name="app\views\head.blade.php" />
+                <File name="app\views\hello.php" />
+                <File name="app\views\index.blade.php" />
+                <File name="app\views\layout.blade.php" />
+                <File name="app\views\list_tables.blade.php" />
+                <File name="app\views\login.blade.php" />
+                <File name="app\views\logout.blade.php" />
+                <File name="app\views\nerd-edit.blade.php" />
+                <File name="app\views\register.blade.php" />
+                <File name="app\views\sample_blog.blade.php" />
+                <File name="app\views\schema_value_labels.blade.php" />
+                <File name="app\views\schema_var.blade.php" />
+                <File name="app\views\signup.blade.php" />
+                <File name="app\views\sir_table.blade.php" />
+                <File name="app\views\table_schema.blade.php" />
+                <File name="app\views\thanks.blade.php" />
+                <File name="app\views\top_nav.blade.php" />
+                <File name="app\views\users.blade.php" />
+            </Folder>
             <Folder name="controllers">
                 <File name="app\controllers\.gitkeep" />
                 <File name="app\controllers\AController.php" />
@@ -144,6 +156,7 @@
                 <File name="app\controllers\FormsContorller.php" />
                 <File name="app\controllers\HomeController.php" />
                 <File name="app\controllers\RegisterController.php" />
+                <File name="app\controllers\ValueSchemaController.php" />
                 <File name="app\controllers\VarSchemaController.php" />
             </Folder>
         </Folder>

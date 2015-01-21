@@ -26,8 +26,9 @@ class CrfSchemaController extends BaseController {
         
         $varTable = Schema_variable::where('table_name', '=', $crf)->get();
         if( count($varTable) == 0 ){
-            return ('That table does not have any associated schema');
-        }else{
+            Session::flash('message', 'That table does not have any associated schema.');
+            return View::make('error')->with( 'tables', $allTables );
+        } else {
             foreach( $varTable as $schemaRow ) {
                 $varLine[] = $schemaRow->toArray(); 
             }

@@ -66,12 +66,12 @@ public function showTable()
         if (isset( $caseid )) {
             if ($crudOperation == 'r') 
             {
-                return View::make('generic_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
+                return View::make('crf_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
                 ->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)
                 ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
             } elseif ($crudOperation == 'u') 
             { 
-                return View::make('generic_form_update')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
+                return View::make('crf_form')->with( 'crf', $this_crf)->with('tableName', $requestedCRF)->with('columns', $columns)
                 ->with( 'this_crf', $requestedCRF) ->with( 'tables', $allTables )->with('caseid', $caseid)
                 ->with('varSchema', $varSchema)->with('valueSchema',$valueSchema);
             }
