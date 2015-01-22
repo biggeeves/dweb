@@ -26,6 +26,11 @@ class FormController extends BaseController {
         if (!isset( $crf ) ) $crf = $firstTable;
 
         $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
+        $x = $varSchema->toArray();
+        return($x[0]);
+        return(get_class_methods($varSchema));
+        
+        
         $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
 
         if (Input::has( 'caseid' ) ) {
@@ -88,11 +93,7 @@ class FormController extends BaseController {
             Session::flash('message', 'There was an error with the crf value.');
             return View::make('error')->with( 'tables', $allTables );
         }
-         
-        $slname =  Input::get('slname');
-        $sfname =  Input::get('sfname');
-        $statusx = Input::get('status');
-        
+           
         $DBConfig = Db_config::first()->toArray();
         $DBName   = $DBConfig['db_name'];
         $DBCaseId = strtolower($DBConfig['db_caseid']);
