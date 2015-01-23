@@ -26,8 +26,42 @@ class FormController extends BaseController {
         if (!isset( $crf ) ) $crf = $firstTable;
 
         $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
+       
+
+        $allVarInfo = $varSchema->toArray();
+        
+        foreach ($allVarInfo as $each_var) {
+            $varName = $each_var['variable_name'];
+            $$varName = new VariableInfo($each_var);
+            $$varName->getVarAttributes();
+        }
+        echo "Name: $ccd01->variable_name<br />";
+        echo "Label: $ccd01->variable_label<br />";
+        echo "Min: $ccd01->variable_range_min<br />";
+        
+        //$allVarInfo->getVarAttributes(); 
+        /* echo $allVarInfo->variable_name; */
+        
+        
+        
         $x = $varSchema->toArray();
-        return($x[0]);
+        
+        foreach ($x as $y){
+            $varName = $y['variable_name'];
+            foreach ($y as $key=>$value){
+                $z[$varName][$key] = $value;
+            }
+        }
+        echo 'Specific var: '. $z['ccd01']['variable_label'] . '<hr />';
+        
+        foreach ($z as $y) {
+            echo '<hr/>'. $y['variable_name'] .'<br/>';
+            foreach ($y as $key=>$value) {
+                echo $key.'.'.$value.'<br />';
+            }
+        }
+        return ('done');
+        
         return(get_class_methods($varSchema));
         
         

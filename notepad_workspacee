@@ -91,25 +91,6 @@
             </Folder>
             <File name="app\filters.php" />
             <File name="app\routes.php" />
-            <Folder name="models">
-                <File name="app\models\Crf_Address.php" />
-                <File name="app\models\crf_bp.php" />
-                <File name="app\models\Crf_Ccd_Copy.php" />
-                <File name="app\models\Crf_Contacts.php" />
-                <File name="app\models\Crf_Demog.php" />
-                <File name="app\models\Crf_Dna_Inv.php" />
-                <File name="app\models\Crf_Medhist.php" />
-                <File name="app\models\crf_pi.php" />
-                <File name="app\models\crf_ptrack.php" />
-                <File name="app\models\crf_xm.php" />
-                <File name="app\models\Db_config.php" />
-                <File name="app\models\nerd.php" />
-                <File name="app\models\Schema_table.php" />
-                <File name="app\models\Schema_value_labels.php" />
-                <File name="app\models\Schema_variable.php" />
-                <File name="app\models\Trial.php" />
-                <File name="app\models\User.php" />
-            </Folder>
             <Folder name="tests">
                 <File name="app\tests\CrfTest.php" />
                 <File name="app\tests\ExampleTest.php" />
@@ -158,6 +139,27 @@
                 <File name="app\controllers\RegisterController.php" />
                 <File name="app\controllers\ValueSchemaController.php" />
                 <File name="app\controllers\VarSchemaController.php" />
+            </Folder>
+            <Folder name="models">
+                <File name="app\models\Crf_Address.php" />
+                <File name="app\models\crf_bp.php" />
+                <File name="app\models\Crf_Ccd_Copy.php" />
+                <File name="app\models\Crf_Contacts.php" />
+                <File name="app\models\Crf_Demog.php" />
+                <File name="app\models\Crf_Dna_Inv.php" />
+                <File name="app\models\Crf_Medhist.php" />
+                <File name="app\models\crf_pi.php" />
+                <File name="app\models\crf_ptrack.php" />
+                <File name="app\models\crf_xm.php" />
+                <File name="app\models\Db_config.php" />
+                <File name="app\models\nerd.php" />
+                <File name="app\models\Schema_table.php" />
+                <File name="app\models\Schema_value_labels.php" />
+                <File name="app\models\Schema_variable.php" />
+                <File name="app\models\ShowTables.php" />
+                <File name="app\models\Trial.php" />
+                <File name="app\models\User.php" />
+                <File name="app\models\VariableInfo.php" />
             </Folder>
         </Folder>
         <Folder name="bootstrap">

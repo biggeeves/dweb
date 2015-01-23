@@ -4,6 +4,8 @@ class CrfSchemaController extends BaseController {
 
     public function showCrfSchema ($crf) {
         
+        $tableMenu = new ShowTables;
+             
         $allTables = DB::select('SHOW TABLES');
         foreach ($allTables as $tablename) {
             foreach($tablename as $key=>$value) {

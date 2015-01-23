@@ -26,6 +26,17 @@ Route::get('/', array('as' => 'home', function()
 	 return View::make( 'hello' );
 }));
 
+Route::get('testbed', function(){
+    $r = new ReflectionClass('DB');
+    var_dump(
+        $r->getFilename()
+    );
+ 
+    var_dump(
+        $r->getName()
+    );
+});
+
 Route::get('/register', 'RegisterController@showRegister');
 
 Route::post('/register', 'RegisterController@doRegister');
@@ -115,7 +126,7 @@ Route::get( 'sir_table', array(
     function() 
 {
     $allTables = DB::select('SHOW TABLES');
-    if (isset($tables)) {
+    if (isset($allTables)) {
         foreach ($tables as $tablename) {
             foreach($tablename as $key=>$value) {
             	if( substr( $value, 1, 3)  == 'crf') {
@@ -123,7 +134,6 @@ Route::get( 'sir_table', array(
                 }
             }
         }
-
     }
 
 	$crf ='';
