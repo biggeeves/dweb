@@ -4,30 +4,19 @@ class FormController extends BaseController {
 
     public function showForm ($crf) {
         $allTables = DB::select('SHOW TABLES');
-        if (isset($allTables)) {
-            foreach ($allTables as $tablename) {
-                foreach($tablename as $key=>$value) {
-                    if( substr( $value, 0, 3)  == 'crf') {
-                        $firstTable = $value;
-                    }
-                }
-            }
+        $DBConfig  = Db_config::first()->toArray();
+        $DBName    = $DBConfig['db_name'];
+        $DBCaseId  = strtolower($DBConfig['db_caseid']);
+        $columns   = Schema::getColumnListing( $crf );
+        $crudOperation = 'r';
+        if (Input::has('crud')) $crudOperation = Input::get('crud');
+        if (Input::has('caseid')) $caseid = Input::get('caseid');
+        if (!$columns) {
+            Session::flash('message', "Sorry $crf was not found");
+            return View::make('error')->with( 'tables', $allTables );
         }
 
-        $DBConfig = Db_config::first()->toArray();
-        $DBName   = $DBConfig['db_name'];
-        $DBCaseId = strtolower($DBConfig['db_caseid']);
-
-        if (Input::has('crud')) {
-            $crudOperation = Input::get('crud');
-         }
-        if (!isset( $crudOperation ) ) $crudOperation = 'r';
-
-        if (!isset( $crf ) ) $crf = $firstTable;
-
         $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
-       
-
         $allVarInfo = $varSchema->toArray();
         
         foreach ($allVarInfo as $each_var) {
@@ -35,15 +24,15 @@ class FormController extends BaseController {
             $$varName = new VariableInfo($each_var);
             $$varName->getVarAttributes();
         }
-        echo "Name: $ccd01->variable_name<br />";
+/*         echo "Name: $ccd01->variable_name<br />";
         echo "Label: $ccd01->variable_label<br />";
         echo "Min: $ccd01->variable_range_min<br />";
-        
+ */        
         //$allVarInfo->getVarAttributes(); 
         /* echo $allVarInfo->variable_name; */
         
         
-        
+/*         
         $x = $varSchema->toArray();
         
         foreach ($x as $y){
@@ -62,45 +51,19 @@ class FormController extends BaseController {
         }
         return ('done');
         
-        return(get_class_methods($varSchema));
+        return(get_class_methods($varSchema)); */
         
         
         $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
 
-        if (Input::has( 'caseid' ) ) {
-            $caseid = Input::get('caseid');
-         }
 
-        if ( isset( $caseid ) ) {
-            $this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
-        }
-        else {
+        if (! isset( $caseid ) ) {
             $this_crf = DB::table( $crf) -> get();
-        }
-
-        $allTables = DB::select('SHOW TABLES');
-
-
-        $columns = Schema::getColumnListing( $crf );
-        
-        if (isset( $caseid )) {
-            if ($crudOperation == 'r'  | $crudOperation == 'u'  ) 
-            {
-                return View::make('crf_form')
-                    ->with('crud', $crudOperation)
-                    ->with('crf', $this_crf)
-                    ->with('tableName', $crf)
-                    ->with('DBName', $DBName)               
-                    ->with('db_caseid', $DBCaseId)
-                    ->with('columns', $columns)
-                    ->with('tables', $allTables )
-                    ->with('caseid', $caseid)
-                    ->with('varSchema', $varSchema)
-                    ->with('valueSchema',$valueSchema);
-            }
-        }
-        else {
-            return View::make('generic_table')
+            if (count($this_crf) == 0) {
+                Session::flash('message', "Sorry nothing was found in $crf ");
+                return View::make('error')->with( 'tables', $allTables );
+            } else {
+                return View::make('generic_table')
                 ->with('DBName', $DBName)               
                 ->with('db_caseid', $DBCaseId)
                 ->with('crf', $this_crf)
@@ -108,19 +71,40 @@ class FormController extends BaseController {
                 ->with('tableName', $crf)
                 ->with('columns', $columns)
                 ->with('tables', $allTables ) ;
+            }
+        }        
+
+        $this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
+        
+        if (count($this_crf) == 0) {
+            Session::flash('message', "Sorry no $crf were found for $caseid.");
+            return View::make('error')->with( 'tables', $allTables );
         }
-        return View::make('error');
+        
+        if ($crudOperation == 'r'  | $crudOperation == 'u'  ) 
+        {
+            return View::make('crf_form')
+                ->with('crud', $crudOperation)
+                ->with('crf', $this_crf)
+                ->with('tableName', $crf)
+                ->with('DBName', $DBName)               
+                ->with('db_caseid', $DBCaseId)
+                ->with('columns', $columns)
+                ->with('tables', $allTables )
+                ->with('caseid', $caseid)
+                ->with('varSchema', $varSchema)
+                ->with('valueSchema',$valueSchema);
+            }
+        Session::flash('message', "Sorry you reached this page.");
+        return View::make('error')->with( 'tables', $allTables );
     }
         
       public function updateForm () {
         $allTables = DB::select('SHOW TABLES');
-        foreach ($allTables as $tablename) {
-            foreach($tablename as $key=>$value) {
-                if( substr( $value, 1, 3)  == 'crf') {
-                    $firstTable = $value;
-                }
-            }
-        }
+        $DBConfig = Db_config::first()->toArray();
+        $DBName   = $DBConfig['db_name'];
+        $DBCaseId = strtolower($DBConfig['db_caseid']);
+        
         if (Input::has( 'crf' ) ) {
             $crf = Input::get('crf');
         } else {
@@ -128,23 +112,11 @@ class FormController extends BaseController {
             return View::make('error')->with( 'tables', $allTables );
         }
            
-        $DBConfig = Db_config::first()->toArray();
-        $DBName   = $DBConfig['db_name'];
-        $DBCaseId = strtolower($DBConfig['db_caseid']);
         $varSchema = Schema_variable::where('table_name', '=', $crf)->get();  
         $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
-        
-        $allTables = DB::select('SHOW TABLES');
-        foreach ($allTables as $tablename) {
-            foreach($tablename as $key=>$value) {
-                if( substr( $value, 1, 3)  == 'crf') {
-                    $firstTable = $value;
-                }
-            }
-        }
         $tableClass = ucfirst($crf);  // Class names are case sensitive
         $columns = Schema::getColumnListing( $crf );
-          
+         
         foreach ($columns as $eachColumn) {
             $fields[$eachColumn] = Input::get($eachColumn);  
         }
@@ -163,7 +135,6 @@ class FormController extends BaseController {
         }
         if($dccSubmit == 'delete') {
             $crud = 'd';
-
             if( isset( $caseid ) ) {
                     $tempTable = $tableClass::where($DBCaseId, '=', $caseid)->first();
                 if (isset($tempTable) ) {
@@ -229,6 +200,8 @@ class FormController extends BaseController {
         $tempTable->save();
         
         $this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
+        Session::flash('message', "Successfully Saved $caseid");
+
 
         return View::make('crf_form')
                 ->with('crud', 'u')

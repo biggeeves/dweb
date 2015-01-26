@@ -4,29 +4,41 @@ class VarSchemaController extends BaseController {
 
     public function showVarSchema ($crf, $varNum) {
         
+        $allTables = DB::select('SHOW TABLES');
         $DBConfig = Db_config::first()->toArray();
         $DBName   = $DBConfig['db_name'];
         $DBCaseId = strtolower($DBConfig['db_caseid']);
         
-        if (!isset($varNum) ) $varNum = 1;
+        if (!isset($varNum) || !is_numeric($varNum) ) {
+            Session::flash('message', 'Please pick a valid variable.');
+            return View::make('error')->with( 'tables', $allTables );
+        }
+        
+        if (!isset( $crf ) ) {
+            Session::flash('message', 'Please pick a table');
+            return View::make('error')->with( 'tables', $allTables );
+        };
+
         $nextVarNum = $varNum + 1;
         $prevVarNum = $varNum - 1;
         if ( $prevVarNum < 1 ) $prevVarNum = 1;
-        $allTables = DB::select('SHOW TABLES');
-        foreach ($allTables as $tablename) {
-            foreach($tablename as $key=>$value) {
-                if( substr( $value, 1, 3)  == 'crf') {
-                    $firstTable = $value;
-                }
-            }
-        }
-        if (!isset( $crf ) ) $crf = $firstTable;
-
+        
         $tableMeta = Schema_table::where('table_name', '=', $crf)->first();
+        if(!$tableMeta)  {
+            Session::flash('message', 'Please pick a valid table');
+            return View::make('error')->with( 'tables', $allTables );
+        };
+
+        
         $tableLabel = $tableMeta->table_label;
         $varSchema = Schema_variable::where('table_name', '=', $crf)
             ->where('id', $varNum)->get();
 
+        if (count($varSchema) == 0 ) {
+            Session::flash('message', 'Sorry Could not find that variable.');
+            return View::make('error')->with( 'tables', $allTables );
+        }
+        
         foreach( $varSchema as $schemaRow ) {
             $varLine[] = $schemaRow->toArray(); 
         }

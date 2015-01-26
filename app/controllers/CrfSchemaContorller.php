@@ -2,19 +2,19 @@
 
 class CrfSchemaController extends BaseController {
 
-    public function showCrfSchema ($crf) {
+    public function showCrfSchema ($crf = Null) {
         
         $tableMenu = new ShowTables;
              
         $allTables = DB::select('SHOW TABLES');
         foreach ($allTables as $tablename) {
             foreach($tablename as $key=>$value) {
-                if( substr( $value, 1, 3)  == 'crf') {
+                if( substr( $value, 0, 3)  == 'crf') {
                     $firstTable = $value;
                 }
             }
         }
-        if (!isset( $crf ) ) $crf = $firstTable;
+        if (!isset($crf))  $crf = $firstTable;
         $tableMeta = Schema_table::where('table_name', '=', $crf)->first();
         if(!$tableMeta) {
            $tableLabel = 'NA';
@@ -35,7 +35,6 @@ class CrfSchemaController extends BaseController {
                 $varLine[] = $schemaRow->toArray(); 
             }
         }
-
         $columnNames = Schema::getColumnListing('schema_variable');
 
          return View::make('table_schema')

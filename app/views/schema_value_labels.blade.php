@@ -23,9 +23,9 @@
     @if (count($crf) == 0 )
 		<p>There are no records in that table</p>
     @endif
-    
+    <p>Think about primary key or adding auto_int "value label position"</p>
     <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'prevLabelNum'=>$prevLabelNum))}}" class="btn btn-default">Previous Value Label Does Not Work</a>
-    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'nextLabelNum'=>$nextLabelNum))}}" class="btn btn-default">Next Value Label Does Not Work</a>
+    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'nextLabelNum'=>$nextLabelNum))}}" class="btn btn-default">Next Value Label Does Not Work.</a>
     
     <div class="row">
         <div class="col-md-12 well">
@@ -34,8 +34,7 @@
 		    {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
 		    {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
 			{{Form::hidden('crf', $crf)}}
-            @foreach ($varLine as $short )
-                @foreach ($short as $key=>$value)
+            @foreach ($varLine as $key=>$value )
                 <div class="form-group">
                     <label for="{{$key}}" class="col-sm-2 control-label">{{$key}}</label>
                     <div class="col-sm-10">
@@ -45,7 +44,6 @@
                     <div class="col-md-6 col-md-offset-3 alert alert-danger">{{$errors->first($key);}}</div>
                     @endif
                 </div>
-                @endforeach
             @endforeach
         {{ Form::close() }}
         </div>

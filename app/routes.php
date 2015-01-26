@@ -19,7 +19,8 @@
 });
 */
 
-Route::when('*', 'csrf', array('post', 'put', 'delete'));  // This will check the _token for every form submission
+// This will check the _token for every form submission
+Route::when('*', 'csrf', array('post', 'put', 'delete'));  
 
 Route::get('/', array('as' => 'home', function() 
 {
@@ -157,8 +158,12 @@ Route::get( 'sir_table', array(
 	/* $ptracks = DB::select('select * from crf_ptrack ', array(1)); */
 	 $columns = Schema::getColumnListing( $crf );
 
-     return View::make('sir_table')->with( 'ptracks', $ptracks)->with('tableName', $crf)->with('columns', $columns)
-	 ->with( 'this_crf', $crf) ->with( 'tables', $allTables );
+     return View::make('sir_table')
+        ->with('ptracks', $ptracks)
+        ->with('tableName', $crf)
+        ->with('columns', $columns)
+        ->with('this_crf', $crf) 
+        ->with('tables', $allTables);
 
 }));
 
@@ -180,10 +185,10 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
 });
     
     
-Route::get('crf_schema/{crf}', ['uses' =>'CrfSchemaController@showCrfSchema', 'as'=>'crfSchema'] );
+Route::get('crf_schema/{crf?}', ['uses' =>'CrfSchemaController@showCrfSchema', 'as'=>'crfSchema'] );
 
-Route::get('var_schema/{crf}/{varNum}', ['uses' =>'VarSchemaController@showVarSchema', 'as'=>'varSchema'] ); //($crf, $varNum)
+Route::get('var_schema/{crf}/{varNum}', ['uses' =>'VarSchemaController@showVarSchema', 'as'=>'varSchema'] );
 
 Route::post('var_schema/crud',  ['uses' =>'VarSchemaController@updateVarSchema', 'as'=>'updateVarSchema'] );
 
-Route::get('value_schema/{crf}/{varName}', ['uses' =>'ValueSchemaController@showValueSchema', 'as'=>'valueSchema'] ); //($crf, $varName)
+Route::get('value_schema/{crf}/{varName}', ['uses' =>'ValueSchemaController@showValueSchema', 'as'=>'valueSchema'] );
