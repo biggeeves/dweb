@@ -1,15 +1,8 @@
 <?php
 class Schema_variable  extends Eloquent {
     protected $table = 'Schema_variable';
-    protected $guarded = array('_token','id','table_name','variable_name');
+    protected $guarded = array('_token');
     protected $primaryKey = 'id';
-    protected $fillable = array('variable_label');
     public $timestamps = false;
-    
-    public $variableName = 'some name';
-    
-    public function getAttributes() {
-        $this->variableName = 'some name';
-    }
 }
 ?>

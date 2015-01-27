@@ -43,7 +43,7 @@
                 ?>
                 <div class="form-group">
                     <?php 
-                        foreach( $varSchema as $schemaRow ) {
+                         foreach( $varSchema as $schemaRow ) {
                             $b= $schemaRow->toArray(); 
                             if ($b['variable_name'] == $key ) {
                                 $varLabel = $b['variable_label'];
@@ -56,7 +56,9 @@
                         foreach( $valueSchema as $valueRow ) {
                             $c= $valueRow->toArray(); 
                             if ($c['variable_name'] == $key ) {
-                                $valueLabels[ $c['value'] ] = $c['value_label'];
+                                if(!$c['value_value'] =='') {
+                                    $valueLabels[ $c['value_value'] ] = $c['value_label'];
+                                }
                             }
                         }
                     ?>

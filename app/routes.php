@@ -28,14 +28,7 @@ Route::get('/', array('as' => 'home', function()
 }));
 
 Route::get('testbed', function(){
-    $r = new ReflectionClass('DB');
-    var_dump(
-        $r->getFilename()
-    );
- 
-    var_dump(
-        $r->getName()
-    );
+
 });
 
 Route::get('/register', 'RegisterController@showRegister');
@@ -49,24 +42,41 @@ Route::get('/login', function ()
 
 Route::post('login', function () 
 {
-    $cred2 = array( "user_login" => Input::get('user_login'),
-		"password" => Input::get('user_password')
+    // validate the info, create rules for the inputs
+    $rules = array(
+        'user_login' => 'required|alphaNum|min:3',
+        'user_password' => 'required|alphaNum|min:3' // password can only be alphanumeric and has to be greater than 3 characters
+    );
+
+    // run the validation rules on the inputs from the form
+    $validator = Validator::make(Input::all(), $rules);
+    
+    if ($validator->fails()) {
+        Session::flash('message', 'Invalid');
+        return Redirect::to('login')
+        ->withErrors($validator) // send back all errors to the login form
+        ->withInput(Input::except('password')); // send back the input (not the password) so that we can repopulate the form
+    } 
+    
+    
+    $credentials = array( "username" => Input::get('user_login'),
+        "password" => Input::get('user_password')
 	);
-	
-    if (Auth::attempt($cred2)) {
-	 // return ( 'You are authenticated' );
+     
+    if (Auth::attempt($credentials)) {
+        Session::flash('message', 'YOU MADE IT THROUGH!');
         return Redirect::intended('/');
     }
        
-	$x_debug = implode(",", $cred2 ) ;
-    $hashedPassword = Hash::make('mypassword');
+	$x_debug = implode(",", $credentials ) ;
+    $hashedPassword = Hash::make('ASDFASDF');
     if (Hash::check(Input::get('user_password'), $hashedPassword)) {   
         return ('password match<br>' . Input::get('user_password'). "=" . $hashedPassword); 
     }
 	
     Session::flash('message', $x_debug);
 
-    return ( var_dump(Auth::attempt($cred2) ) );
+    // return ( var_dump(Auth::attempt($credentials) ) );
     return Redirect::to('login');
 });
 
@@ -103,16 +113,8 @@ Route::get('/a', array(
 );
 */
 Route::get('/a', array('before'=>'newYear', 'uses' => 'AController@showWelcome'));
-
-Route::get('/a', 'AController@showWelcome');
-Route::get('/b', 'AController@showTable');
-Route::get('c/{someVar}', function ($someVar) {
-    return "You added {$someVar}";
-});
 Route::get('/d/{passVar}', 'AController@passVar');
 Route::get('/e', array('uses' => 'AController@withArray', 'as' => 'directions'));
-
-
 
 Route::get( 'users', function() 
 {
@@ -121,53 +123,7 @@ Route::get( 'users', function()
 	 return View::make( 'users' )->with( 'users', $users);
 });
 
-
-Route::get( 'sir_table', array(
-    'before' => 'auth',
-    function() 
-{
-    $allTables = DB::select('SHOW TABLES');
-    if (isset($allTables)) {
-        foreach ($tables as $tablename) {
-            foreach($tablename as $key=>$value) {
-            	if( substr( $value, 1, 3)  == 'crf') {
-                    $firstTable = $value;
-                }
-            }
-        }
-    }
-
-	$crf ='';
-		if (Input::has( 'crf' ) ) {
-		$crf = Input::get('crf');
-	 }
-	 
-	if ($crf == 'crf_ptrack') {
-		if (Input::has( 'slname' ) ) {
-			$someLastName = Input::get('slname');
-		}
-	}
-	/* $crf_list = DB::select( DB::raw('SELECT * FROM crf_Ptrack WHERE slname LIKE "$someLastName"'), array(1) ); */
-
-	if (!isset( $crf ) ) $crf = firstTable;
-	if (!isset( $someLastName ) ) $someLastName  = 'ESCANO';
-	
-	$crf_list = DB::table( 'crf_ptrack' )->where('slname', 'LIKE', $someLastName)->lists('slname');
-	$ptracks = Crf_ptrack::all();
-
-	/* $ptracks = DB::select('select * from crf_ptrack ', array(1)); */
-	 $columns = Schema::getColumnListing( $crf );
-
-     return View::make('sir_table')
-        ->with('ptracks', $ptracks)
-        ->with('tableName', $crf)
-        ->with('columns', $columns)
-        ->with('this_crf', $crf) 
-        ->with('tables', $allTables);
-
-}));
-
-Route::get('forms/{crf}', ['uses' =>'FormController@showForm', 'as'=>'showForm'] );
+Route::get('forms/{crf?}', ['uses' =>'FormController@showForm', 'as'=>'showForm'] );
 
 Route::post('forms/crud', ['uses' =>'FormController@updateForm', 'as'=>'updateForm'] );
 

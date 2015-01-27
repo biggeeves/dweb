@@ -14,6 +14,10 @@
     @endif
 <div class="welcome">
     <h1>Log In</h1>
+    <p>
+    {{ $errors->first('email') }}
+    {{ $errors->first('password') }}
+    </p>
     {{Form::open(array('url' => 'login')) }}
 
         {{Form::label('user_login', 'Username') }}

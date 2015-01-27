@@ -2,17 +2,22 @@
 
 class FormController extends BaseController {
 
-    public function showForm ($crf) {
+    public function showForm ($crf = Null) {
+
         $allTables = DB::select('SHOW TABLES');
         $DBConfig  = Db_config::first()->toArray();
         $DBName    = $DBConfig['db_name'];
         $DBCaseId  = strtolower($DBConfig['db_caseid']);
+        if (is_null($crf)) {
+            Session::flash('message', "Please pick a table");
+            return View::make('error')->with( 'tables', $allTables );
+        }
         $columns   = Schema::getColumnListing( $crf );
         $crudOperation = 'r';
         if (Input::has('crud')) $crudOperation = Input::get('crud');
         if (Input::has('caseid')) $caseid = Input::get('caseid');
         if (!$columns) {
-            Session::flash('message', "Sorry $crf was not found");
+            Session::flash('message', "Sorry '$crf' was not found");
             return View::make('error')->with( 'tables', $allTables );
         }
 

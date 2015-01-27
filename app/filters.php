@@ -94,8 +94,10 @@ Route::filter('csrf', function()
 
 Route::filter('newYear', function() 
 {
-    if (date('m/d') == '12/37') {
+    if (date('m/d') == '01/27') {
         return 'Happy December 17th';
+    } else  {
+        return 'Today is not your day';
     }
 });
 

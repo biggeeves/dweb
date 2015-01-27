@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 class ShowTables {
@@ -8,9 +8,9 @@ class ShowTables {
    {
       $this->allTables = DB::select('SHOW TABLES');
    }
-   
+
    public function firstTable () {
    }
-   
+
 }
 ?>
