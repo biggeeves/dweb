@@ -39,6 +39,7 @@
                 <File name="app\controllers\RegisterController.php" />
                 <File name="app\controllers\ValueSchemaController.php" />
                 <File name="app\controllers\VarSchemaController.php" />
+                <File name="app\controllers\TestBedController.php" />
             </Folder>
             <Folder name="database">
                 <Folder name="migrations">
@@ -52,7 +53,7 @@
                     <File name="app\database\seeds\DatabaseSeeder.php" />
                     <File name="app\database\seeds\GenericTableSeeder.php" />
                     <File name="app\database\seeds\users.php" />
-                    <File name="app\database\seeds\UsersTableSeeder.php" />
+                    <File name="app\database\seeds\UsersFakerSeeder.php" />
                 </Folder>
                 <File name="app\database\production.sqlite" />
             </Folder>
@@ -179,7 +180,6 @@
                 <File name="app\views\schema_value_labels.blade.php" />
                 <File name="app\views\schema_var.blade.php" />
                 <File name="app\views\signup.blade.php" />
-                <File name="app\views\sir_table.blade.php" />
                 <File name="app\views\table_schema.blade.php" />
                 <File name="app\views\thanks.blade.php" />
                 <File name="app\views\top_nav.blade.php" />

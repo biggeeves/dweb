@@ -12,13 +12,6 @@
 */
 
 
-/* first step in Laravel 
- Route::get('/', function()
-{
-	 return View::make( 'hello' );
-});
-*/
-
 // This will check the _token for every form submission
 Route::when('*', 'csrf', array('post', 'put', 'delete'));  
 
@@ -27,9 +20,7 @@ Route::get('/', array('as' => 'home', function()
 	 return View::make( 'hello' );
 }));
 
-Route::get('testbed', function(){
-
-});
+Route::resource('/testbed', 'TestBedController');
 
 Route::get('/register', 'RegisterController@showRegister');
 
@@ -86,32 +77,16 @@ Route::get('/logout', function ()
     return View::make('logout');
 });
 
-// Route::get('login', array('as' => 'login', function () {return 'login'; }))->before('guest');
-
-// Route::post('login', function () { });
-
-// Route::get('logout', array('as' => 'logout', function () { }))->before('auth');
-
-Route::get('profile', array('as' => 'profile', function () { }))->before('auth');
-
 Route::get('signup', function() {
     return View:: make('signup');
 });
 
 Route::post('thanks', function() {
     $theEmail = Input::get('email');
-    return View::make('thanks')->with('theEmail', $theEmail);
+    return View::make('thanks')
+    ->with('theEmail', $theEmail);
 });
 
-/*
-Route::get('/a', array(
-    'before' => 'newYear',
-    function () {
-    Return "You blah blah";
-    }
-    )
-);
-*/
 Route::get('/a', array('before'=>'newYear', 'uses' => 'AController@showWelcome'));
 Route::get('/d/{passVar}', 'AController@passVar');
 Route::get('/e', array('uses' => 'AController@withArray', 'as' => 'directions'));
@@ -120,12 +95,19 @@ Route::get( 'users', function()
 {
      $users = User::all();
 
-	 return View::make( 'users' )->with( 'users', $users);
+	 return View::make( 'users' )
+     ->with( 'users', $users);
 });
 
-Route::get('forms/{crf?}', ['uses' =>'FormController@showForm', 'as'=>'showForm'] );
+Route::get('forms/{crf?}', ['before'=>'auth',
+    'uses' =>'FormController@showForm', 
+    'as'=>'showForm'] 
+);
 
-Route::post('forms/crud', ['uses' =>'FormController@updateForm', 'as'=>'updateForm'] );
+Route::post('forms/crud', ['before'=>'auth',
+    'uses' =>'FormController@updateForm',
+    'as'=>'updateForm'] 
+);
 
 Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num) 
 {
@@ -141,10 +123,22 @@ Route::get('nerd/edit/{id_num}', array('as' => 'nerd.edit', function($id_num)
 });
     
     
-Route::get('crf_schema/{crf?}', ['uses' =>'CrfSchemaController@showCrfSchema', 'as'=>'crfSchema'] );
+Route::get('crf_schema/{crf?}', ['before'=>'auth', 
+    'uses' =>'CrfSchemaController@showCrfSchema',
+    'as'=>'crfSchema'] 
+);
 
-Route::get('var_schema/{crf}/{varNum}', ['uses' =>'VarSchemaController@showVarSchema', 'as'=>'varSchema'] );
+Route::get('var_schema/{crf}/{varNum}', ['before'=>'auth', 
+    'uses' =>'VarSchemaController@showVarSchema',
+    'as'=>'varSchema'] 
+);
 
-Route::post('var_schema/crud',  ['uses' =>'VarSchemaController@updateVarSchema', 'as'=>'updateVarSchema'] );
+Route::post('var_schema/crud',  ['before'=>'auth',  
+    'uses' =>'VarSchemaController@updateVarSchema',
+    'as'=>'updateVarSchema'] 
+);
 
-Route::get('value_schema/{crf}/{varName}', ['uses' =>'ValueSchemaController@showValueSchema', 'as'=>'valueSchema'] );
+Route::get('value_schema/{crf}/{varName}', ['before'=>'auth',  
+    'uses' =>'ValueSchemaController@showValueSchema', 
+    'as'=>'valueSchema'] 
+);
