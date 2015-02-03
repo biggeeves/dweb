@@ -23,27 +23,23 @@
     </div>
     @endif
 
-
-
-    @if (count($crf) == 0 )
+    @if (count($this_crf) == 0 )
 		<p>There are no records in that table</p>
-	@else
+    @else
         {{ Form::open(array('url' => url('forms/crud'), 'class'=>'form-horizontal', 'id'=>'crf_form', 'role'=>'form', 'data-parsley-validate'=>'' ))  }}
             @if ($crud == 'u')
                 {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
                 {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
                 {{Form::hidden('crf', $tableName)}}
             @endif
-			@foreach( $crf as $key=>$value )
-                <?php 
-                    $varLabel = $key; 
-                    $varMax = ''; 
-                    $varMin = '';
-                    $valueLabels = [];
-                ?>
+			@foreach( $this_crf as $key=>$value )
                 <div class="form-group">
                     <?php 
-                         foreach( $varSchema as $schemaRow ) {
+                        $varLabel = $key; 
+                        $varMax = ''; 
+                        $varMin = '';
+                        $valueLabels = [];
+                        foreach( $varSchema as $schemaRow ) {
                             $b= $schemaRow->toArray(); 
                             if ($b['variable_name'] == $key ) {
                                 $varLabel = $b['variable_label'];
@@ -86,5 +82,5 @@
         <script type="text/javascript">
             $('#crf_form').parsley();
         </script>
-	@endif
+    @endif
 @stop

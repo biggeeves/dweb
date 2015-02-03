@@ -62,35 +62,34 @@ class FormController extends BaseController {
         $valueSchema = Schema_value_labels::where('table_name', '=', $crf)->get();
 
 
-        if (! isset( $caseid ) ) {
+        if ( ! isset( $caseid ) ) {
             $this_crf = DB::table( $crf) -> get();
-            if (count($this_crf) == 0) {
+/*             if (count($this_crf) == 0) {
                 Session::flash('message', "Sorry nothing was found in $crf ");
                 return View::make('error')->with( 'tables', $allTables );
-            } else {
+            } else { */
                 return View::make('generic_table')
                 ->with('DBName', $DBName)               
                 ->with('db_caseid', $DBCaseId)
-                ->with('crf', $this_crf)
-                ->with('this_crf', $crf) 
+                ->with('this_crf', $this_crf) 
                 ->with('tableName', $crf)
                 ->with('columns', $columns)
                 ->with('tables', $allTables ) ;
-            }
+            //}
         }        
 
         $this_crf = DB::table( $crf) ->where($DBCaseId, $caseid)->first();
         
-        if (count($this_crf) == 0) {
+        /* if (count($this_crf) == 0) {
             Session::flash('message', "Sorry no $crf were found for $caseid.");
             return View::make('error')->with( 'tables', $allTables );
-        }
+        } */
         
         if ($crudOperation == 'r'  | $crudOperation == 'u'  ) 
         {
             return View::make('crf_form')
                 ->with('crud', $crudOperation)
-                ->with('crf', $this_crf)
+                ->with('this_crf', $this_crf)
                 ->with('tableName', $crf)
                 ->with('DBName', $DBName)               
                 ->with('db_caseid', $DBCaseId)
