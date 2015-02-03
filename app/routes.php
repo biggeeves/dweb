@@ -99,6 +99,10 @@ Route::get( 'users', function()
      ->with( 'users', $users);
 });
 
+Route::get('liststats/', ['before'=>'auth',
+    'uses' =>'ListStatsController@showListStats', 
+    'as'=>'showListStats'] 
+);
 Route::get('forms/{crf?}', ['before'=>'auth',
     'uses' =>'FormController@showForm', 
     'as'=>'showForm'] 

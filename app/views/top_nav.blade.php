@@ -43,8 +43,17 @@
                         </ul>
                     </li>
                 </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/liststats')}}">List Stats</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">No Reports Yet</a></li>
+                        </ul>
+                    </li>
+                </ul>
 
-<ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right">
                     <li id="fat-menu" class="dropdown">
                         <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">

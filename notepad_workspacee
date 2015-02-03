@@ -184,6 +184,7 @@
                 <File name="app\views\thanks.blade.php" />
                 <File name="app\views\top_nav.blade.php" />
                 <File name="app\views\users.blade.php" />
+                <File name="app\views\list_stats.blade.php" />
             </Folder>
             <File name="app\filters.php" />
             <File name="app\routes.php" />
