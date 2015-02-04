@@ -40,10 +40,37 @@ class TestBedController extends \BaseController {
         }
         $crf = $firstTable;
         $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
+        $qwer = $varSchema->toArray();
+        $DBVersion = DB::table('schema_variable')->where('table_name', '=', $crf)->get();;
+        foreach ($qwer as $row){
+            foreach ($row as $key=>$value){
+                $something[$row['variable_name']][$key] = $value;
+               // echo ($key.':'.$value.'<br>');
+            }
+        }
+        echo $something['ptid']['variable_name'];
+        echo ('<pre>');
+        echo (print_r($something));
+die();
+        echo (print_r($DBVersion));
+        echo ('</pre>'); 
+        //echo ('<hr>' . $model . '</id><br /><hr />');
+        echo ('<hr />Get Type varSchema:');
+        echo (gettype($varSchema));
+        echo ('<br>Get Class Methods<pre>');
+        echo (print_r(get_class_methods($varSchema)));
+        echo ('</pre>');
+        echo ('<hr />Print R QWER');
+        echo ('<pre>');
+        echo (print_r($qwer));
+        echo ('</pre>');
+        echo ('<hr />');
+        echo ('<hr />');
+
         $allVarInfo = $varSchema->toArray();
 
-        echo ('<pre>');
-		die (print_r($allVarInfo));
+        //echo ('<pre>');
+		//die (print_r($allVarInfo));
 	}
 
 

@@ -6,6 +6,6 @@ class LogInTest extends TestCase {
     {
         $crawler = $this->client->request('GET', '/login');
         $this->assertTrue($this->client->getResponse()->isOk());
-        $this->assertCount(1, $crawler->filter('h2:contains("log in")'));
+        $this->assertCount(1, $crawler->filter('h2:contains("Log in")'));
     }
 }
