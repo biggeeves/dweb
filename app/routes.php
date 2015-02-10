@@ -103,6 +103,12 @@ Route::get('liststats/', ['before'=>'auth',
     'uses' =>'ListStatsController@showListStats', 
     'as'=>'showListStats'] 
 );
+
+Route::get('primary_keys/', ['before'=>'auth',
+    'uses' =>'PrimaryKeysController@showPrimaryKeys', 
+    'as'=>'showPrimaryKeys'] 
+);
+
 Route::get('forms/{crf?}', ['before'=>'auth',
     'uses' =>'FormController@showForm', 
     'as'=>'showForm'] 

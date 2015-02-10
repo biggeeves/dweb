@@ -48,6 +48,9 @@
                         <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/liststats')}}">List Stats</a></li>
+                            
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/primary_keys')}}">Primary Keys</a></li>
+                            
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">No Reports Yet</a></li>
                         </ul>
                     </li>
