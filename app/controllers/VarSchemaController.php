@@ -32,8 +32,18 @@ class VarSchemaController extends BaseController {
         
         $tableLabel = $tableMeta->table_label;
         $varSchema = Schema_variable::where('table_name', '=', $crf)
-            ->where('id', $varNum)->get();
-
+            ->where('id', $varNum)
+            ->get();
+        foreach( $varSchema as $schemaRow ) {
+            $varLine[] = $schemaRow->toArray(); 
+        }
+        $varName = $varLine[0]['variable_name'];
+        $valueSchema  = Schema_value_labels::where('table_name', '=', $crf)
+            ->where('variable_name', $varName)
+            ->first();
+        // Handle nothing returned 
+        $showValueLabelsButton = 0;
+        if (count($valueSchema) > 0) {$showValueLabelsButton = 1;}
         if (count($varSchema) == 0 ) {
             Session::flash('message', 'Sorry Could not find that variable.');
             return View::make('error')->with( 'tables', $allTables );
@@ -51,7 +61,8 @@ class VarSchemaController extends BaseController {
             ->with('varLine', $varLine)
             ->with('prevVarNum', $prevVarNum)
             ->with('thisVarNum', $varNum)
-            ->with('nextVarNum', $nextVarNum);
+            ->with('nextVarNum', $nextVarNum)
+            ->with('showValueLabelButton', $showValueLabelsButton);
     }
     
     

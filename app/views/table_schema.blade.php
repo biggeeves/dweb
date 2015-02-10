@@ -12,7 +12,7 @@
             @foreach ($row as $key=>$value)
                 <td>
                     @if ($key == 'variable_name') 
-                        <a href="/dcc/public/var_schema/{{$crf}}/{{$row['id']}}">
+                        <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$row['id']))}}">
                     @endif
                     {{$value}}
                     @if ($key == 'variable_name')</a>@endif

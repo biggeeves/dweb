@@ -108,7 +108,7 @@ Route::get('forms/{crf?}', ['before'=>'auth',
     'as'=>'showForm'] 
 );
 
-Route::post('forms/crud', ['before'=>'auth',
+Route::post('forms/crud', ['before'=>'auth','before' => 'csrf',
     'uses' =>'FormController@updateForm',
     'as'=>'updateForm'] 
 );
@@ -135,6 +135,7 @@ Route::get('crf_schema/{crf?}', ['before'=>'auth',
 Route::get('var_schema/{crf}/{varNum}', ['before'=>'auth', 
     'uses' =>'VarSchemaController@showVarSchema',
     'as'=>'varSchema'] 
+   
 );
 
 Route::post('var_schema/crud',  ['before'=>'auth',  

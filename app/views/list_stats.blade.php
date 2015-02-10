@@ -20,9 +20,9 @@
     @endif
     @foreach($tableCounts as $tableName=>$tableCount)
         @if($tableCount > 0)
-            <p><a href="{{URL::route('showForm', array('value'=>$tableName))}}">{{$tableName}}</a>:{{$tableCount}}</p>
+            <p><a href="{{URL::route('showForm', array('value'=>$tableName))}}">{{$tableName}}</a>: {{$tableCount}}</p>
         @else
-            <p>{{$tableName}}:{{$tableCount}}</p>
+            <p>{{$tableName}}: {{$tableCount}}</p>
         @endif
     @endforeach
 @stop

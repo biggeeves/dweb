@@ -1,6 +1,6 @@
 <?php
 
-class Home_test extends TestCase {
+class HomeTest extends TestCase {
 
     public function testHomePage()
     {

@@ -1,6 +1,7 @@
 @extends('layout')
 @section('content')
     <h2>{{$tableLabel}}  Variable Schema Update</h2>
+    <p>Pass in count of value labels, show Value Labels button only if it has value labels</p>
     @if ( ! $errors->isEmpty() )
     <div class="row">
         <div class="col-md-4 alert alert-danger">Please fix these errors before continuing on.</div>
@@ -24,9 +25,12 @@
 		<p>There are no records in that table</p>
     @endif
     
-    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'prevVarNum'=>$prevVarNum))}}"class="btn btn-default">Previous Var</a>
-    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'nextVarNum'=>$nextVarNum))}}"class="btn btn-default">Next Var</a>
-    <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'varName'=>$varLine[0]['variable_name']))}}"class="btn btn-default">Value Labels</a>
+    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$prevVarNum))}}"class="btn btn-default">Previous Var</a>
+    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$nextVarNum))}}"class="btn btn-default">Next Var</a>
+    @if ($showValueLabelButton > 0)
+        <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'varName'=>$varLine[0]['variable_name']))}}"class="btn
+ btn-default">Value Labels</a>
+    @endif
     
     <div class="row">
         <div class="col-md-12 well">

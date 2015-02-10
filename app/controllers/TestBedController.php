@@ -41,6 +41,11 @@ class TestBedController extends \BaseController {
         $crf = $firstTable;
         $varSchema = Schema_variable::where('table_name', '=', $crf)->get();
         $qwer = $varSchema->toArray();
+        echo ('<pre>');
+        foreach ($varSchema as $schemaObject){
+    print_r($schemaObject->variable_name);
+        }
+        die();
         $DBVersion = DB::table('schema_variable')->where('table_name', '=', $crf)->get();;
         foreach ($qwer as $row){
             foreach ($row as $key=>$value){

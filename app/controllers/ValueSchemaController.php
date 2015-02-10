@@ -30,22 +30,21 @@ class ValueSchemaController extends BaseController {
         $tableLabel = $tableMeta->table_label;
         $valueSchema  = Schema_value_labels::where('table_name', '=', $crf)
             ->where('variable_name', $varName)
-            ->first()
-            ->toArray();
-        
-        $varLine = $valueSchema;
-        
-        if( count($varLine) == 0) {
-            Session::flash('message', "No Value Labels");
+            ->first();
+        // Handle nothing returned
+        if (count($valueSchema) == 0) {
+            Session::flash('message', "No Value Labels Schema Returned");
             return View::make('error')->with('tables', $allTables);
         }
+        
+        $valueSchema->toArray();
 
         return View::make('schema_value_labels')
             ->with('DBName', $DBName)               
             ->with('tables', $allTables)
             ->with('crf', $crf)
             ->with('tableLabel', $tableLabel)
-            ->with('varLine', $varLine)
+            ->with('varLine', $valueSchema)
             ->with('nextLabelNum', $nextVarNum)
             ->with('prevLabelNum', $prevVarNum);
     }
