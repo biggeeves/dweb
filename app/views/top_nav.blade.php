@@ -29,8 +29,8 @@
                 </ul>
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Table Schema<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                        <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Table Schema<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
                             @if (isset($tables))
                                 @foreach ($tables as $tablename)
                                     @foreach($tablename as $key=>$value)
@@ -45,8 +45,8 @@
                 </ul>
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                        <a href="#" id="drop4" role="button" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop4">
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/liststats')}}">List Stats</a></li>
                             
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/primary_keys')}}">Primary Keys</a></li>
@@ -58,8 +58,8 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li id="fat-menu" class="dropdown">
-                        <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                        <a href="#" id="drop5" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop5">
                         @if (Auth::check())
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="{{URL::to('/logout')}}">Log Out</a></li>
                         @else

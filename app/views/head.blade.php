@@ -12,7 +12,7 @@
 	{{ HTML::style('css/bootstrap.min.css'); }}
 
     <!-- Custom styles for this template -->
-	{{ HTML::style('css/blog.css'); }}
+	{{ HTML::style('css/custom.css'); }}
 
     <!-- Custom JavaScript-->
 	{{ HTML::script('js/global.js'); }}

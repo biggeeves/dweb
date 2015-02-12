@@ -5,8 +5,8 @@
     <div class="container">
        @include('top_nav')
 	   @yield('content')
-    </div><!-- /.container -->
        @include('footer')
+    </div><!-- /.container -->
 	   @include('footer_js')
   </body>
 </html>
