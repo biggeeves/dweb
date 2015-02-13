@@ -49,10 +49,6 @@ class VarSchemaController extends BaseController {
             return View::make('error')->with( 'tables', $allTables );
         }
         
-        foreach( $varSchema as $schemaRow ) {
-            $varLine[] = $schemaRow->toArray(); 
-        }
-
         return View::make('schema_var')
             ->with('DBName', $DBName)               
             ->with('tables', $allTables)

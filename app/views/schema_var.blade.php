@@ -25,20 +25,23 @@
 		<p>There are no records in that table</p>
     @endif
     
-    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$prevVarNum))}}"class="btn btn-default">Previous Var</a>
-    <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$nextVarNum))}}"class="btn btn-default">Next Var</a>
-    @if ($showValueLabelButton > 0)
-        <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'varName'=>$varLine[0]['variable_name']))}}"class="btn
- btn-default">Value Labels</a>
-    @endif
+
     
     <div class="row">
         <div class="col-md-12 well">
-        
         {{ Form::open(array('url' => url('var_schema/crud'), 'class'=>'form-horizontal', 'id'=>'variable_schema')) }}
+            <div class="row">
+                <div class="col-md-12 well">
 		    {{Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'update'])}}
 		    {{Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'submit', 'value'=>'delete'])}}
-			{{Form::hidden('crf', $crf)}}
+            <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$prevVarNum))}}" class="btn btn-default pull-right">Previous Var</a>
+            <a href="{{URL::route('varSchema', array('crf'=>$crf, 'varnum'=>$nextVarNum))}}" class="btn btn-default pull-right">Next Var</a>
+            @if ($showValueLabelButton > 0)
+                <a href="{{URL::route('valueSchema', array('crf'=>$crf, 'varName'=>$varLine[0]['variable_name']))}}" class="btn btn-default  pull-right">Value Labels</a>
+            @endif
+                </div>
+            </div>
+            {{Form::hidden('crf', $crf)}}
             @foreach ($varLine as $short )
                 @foreach ($short as $key=>$value)
                 <div class="form-group">
